@@ -14,11 +14,15 @@ namespace PandaDigital
 {
     public partial class MainFrm : Form
     {
-        private Point oldPoint = Point.Empty;
+        private Point lastPoint = Point.Empty;
+        private Point endPoint = Point.Empty;
         private List<Point> userPoints = new List<Point>();
         private List<AxisPoint> axisPoints = new List<AxisPoint>();
         private int axisCtr;
         private Point zoomedLocation;
+        private int drawModePenSize = 30;
+        private List<Point> currentLine = new List<Point>();
+        private List<List<Point>> curves = new List<List<Point>>();
 
         public MainFrm()
         {
@@ -47,19 +51,34 @@ namespace PandaDigital
 
             if (imgBox.Image != null)
             {
-                if ((e.X - size > imgBox.Location.X) && (e.X + size < imgBox.Location.X + imgBox.Size.Width) && (e.Y + size < imgBox.Location.Y + imgBox.Size.Height) && (e.Y - size > imgBox.Location.Y))
+                if (tabControl1.SelectedIndex == 1 )
                 {
-                    imgBox.Cursor = Cursors.Cross;
-                    zoomedLocation = e.Location;
-                    Invalidate(true);
-                    Update();
+                    if (drawModeCheckBox.Checked)
+                    {
+                        if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                        {
+                            currentLine.Add(e.Location);
+                            Invalidate(true);
+                            Update();
+                        }
+                    }
+                }
+                else
+                {
+                    if ((e.X - size > imgBox.Location.X) && (e.X + size < imgBox.Location.X + imgBox.Size.Width) && (e.Y + size < imgBox.Location.Y + imgBox.Size.Height) && (e.Y - size > imgBox.Location.Y))
+                    {
+                        imgBox.Cursor = Cursors.Cross;
+                        zoomedLocation = e.Location;
+                        Invalidate(true);
+                        Update();
+                    }
                 }
             }
         }
-       
+
         private void imgBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (imgBox.Image != null)
+            if (imgBox.Image != null & (tabControl1.SelectedIndex == 0))
             {
                 if (userRadioBtn.Checked)
                     userPoints.Add(e.Location);
@@ -71,10 +90,11 @@ namespace PandaDigital
                     InitAxis(e.Location, 3);
                 else if (y2RadioButton.Checked)
                     InitAxis(e.Location, 4);
-
-                Invalidate(true);
-                Update();
             }
+
+            Invalidate(true);
+            Update();
+
         }
 
         private void deletePrevBtn_Click(object sender, EventArgs e)
@@ -234,18 +254,42 @@ namespace PandaDigital
         /* Drawing */
         private void DrawSight(PaintEventArgs e)
         {
-            int size = 2;
+            int sizeHorExt = 170;
+            int sizeVertExt = 145;
+            int radio = 1;
 
-            Rectangle sight = new Rectangle(zoomedImgBox.Size.Width / 2 - size, zoomedImgBox.Size.Height / 2 - size, 2 * size, 2 * size);
-            e.Graphics.DrawRectangle(new Pen(Color.Red, size), sight);
+            int zoomedPboxWidth, zoomedPboxHeight;
+
+            zoomedPboxWidth = zoomedImgBox.Size.Width;
+            zoomedPboxHeight = zoomedImgBox.Size.Height;
+
+            e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth/2, zoomedPboxHeight/2 - sizeVertExt, zoomedPboxWidth/2, zoomedPboxHeight/2 + sizeVertExt);
+            e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth / 2 - sizeHorExt, zoomedPboxHeight / 2, zoomedPboxWidth / 2 + sizeHorExt, zoomedPboxHeight / 2);
+            e.Graphics.DrawEllipse(new Pen(Color.Red, 5), new Rectangle(zoomedPboxWidth/2 - radio, zoomedPboxHeight/2 - radio, 2*radio, 2*radio));
         }
 
         private void Draw(PaintEventArgs e)
         {
             DrawAxis(e);
             DrawUserPoints(e);
+            DrawUserAutoLine(e);
         }
-        
+
+        private void DrawUserAutoLine(PaintEventArgs e)
+        {
+            if (imgBox.Image != null)
+            {
+                using (Pen pen = new Pen(Color.Red, drawModePenSize))
+                {
+                    if (currentLine.Count > 1)
+                        e.Graphics.DrawCurve(pen, currentLine.ToArray());
+
+                    foreach (List<Point> curve in curves)
+                        e.Graphics.DrawCurve(pen, curve.ToArray());
+                }
+            }
+        }
+
         private void DrawAxis(PaintEventArgs e)
         {
             int size = 8;
@@ -439,11 +483,73 @@ namespace PandaDigital
 
             return bmp;
         }
+
+        
+
+
+
+
+
+       
+        private void bgColorBtn_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                bgColorPicBox.BackColor = colorDialog1.Color;
+            }
+        }
+        
+        private void DrawModeLine(PaintEventArgs e)
+        {
+            float x1, y1, x2, y2, dmPboxWidth, dmPboxHeight, margin;
+            
+            dmPboxWidth = drawModePictureBox.Size.Width;
+            dmPboxHeight = drawModePictureBox.Size.Height;
+            margin = 5;
+            
+            x1 = margin;
+            y1 = dmPboxHeight / 2;
+            x2 = dmPboxWidth - margin;
+            y2 = dmPboxHeight / 2;
+            
+            e.Graphics.DrawLine(new Pen(Color.Red, drawModePenSize), x1, y1, x2, y2);
+
+        }
+
+        private void drawModePictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            DrawModeLine(e);
+        }
+
+        private void penSizeTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            drawModePenSize = penSizeTrackBar.Value;
+            drawModePictureBox.Invalidate(true);
+            drawModePictureBox.Update();
+        }
+
+        private void imgBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (imgBox.Image != null)
+            {
+                if (tabControl1.SelectedIndex == 1)
+                {
+                    if (drawModeCheckBox.Checked)
+                    {
+                        if (currentLine.Count > 1)
+                            curves.Add(currentLine.ToList());
+                        currentLine.Clear();
+                        Invalidate(true);
+                        Update();
+                    }
+                }
+            }
+        }
+        
+
+
+
         /* End of methods for handling zoomed image */
-
-
-
-
 
 
 
