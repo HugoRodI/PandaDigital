@@ -69,6 +69,7 @@
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.curvesColorCmbBox = new System.Windows.Forms.ComboBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.selectPenColorBox = new System.Windows.Forms.PictureBox();
             this.clearPenBtn = new System.Windows.Forms.Button();
             this.drawModePictureBox = new System.Windows.Forms.PictureBox();
             this.drawModeCheckBox = new System.Windows.Forms.CheckBox();
@@ -79,7 +80,6 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.ribbonButton1 = new System.Windows.Forms.RibbonButton();
             this.ribbonButton2 = new System.Windows.Forms.RibbonButton();
-            this.selectPenColorBox = new System.Windows.Forms.PictureBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomedImgBox)).BeginInit();
@@ -97,10 +97,10 @@
             this.autoTabPage.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).BeginInit();
             this.groupBox11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -139,9 +139,9 @@
             // 
             this.imgBox.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.imgBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.imgBox.Location = new System.Drawing.Point(6, 19);
+            this.imgBox.Location = new System.Drawing.Point(6, 17);
             this.imgBox.Name = "imgBox";
-            this.imgBox.Size = new System.Drawing.Size(844, 615);
+            this.imgBox.Size = new System.Drawing.Size(844, 660);
             this.imgBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.imgBox.TabIndex = 1;
             this.imgBox.TabStop = false;
@@ -155,9 +155,9 @@
             // zoomedImgBox
             // 
             this.zoomedImgBox.BackColor = System.Drawing.Color.White;
-            this.zoomedImgBox.Location = new System.Drawing.Point(870, 56);
+            this.zoomedImgBox.Location = new System.Drawing.Point(870, 54);
             this.zoomedImgBox.Name = "zoomedImgBox";
-            this.zoomedImgBox.Size = new System.Drawing.Size(340, 288);
+            this.zoomedImgBox.Size = new System.Drawing.Size(340, 340);
             this.zoomedImgBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.zoomedImgBox.TabIndex = 2;
             this.zoomedImgBox.TabStop = false;
@@ -168,7 +168,7 @@
             this.groupBox1.Controls.Add(this.imgBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 37);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(856, 640);
+            this.groupBox1.Size = new System.Drawing.Size(856, 683);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Image:";
@@ -182,8 +182,7 @@
             this.tabControl1.Controls.Add(this.manualTabPage);
             this.tabControl1.Controls.Add(this.autoTabPage);
             this.tabControl1.ItemSize = new System.Drawing.Size(169, 25);
-            this.tabControl1.Location = new System.Drawing.Point(870, 354);
-            this.tabControl1.Multiline = true;
+            this.tabControl1.Location = new System.Drawing.Point(870, 397);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(344, 323);
@@ -363,6 +362,7 @@
             this.exportBtn.TabIndex = 6;
             this.exportBtn.Text = "Export";
             this.exportBtn.UseVisualStyleBackColor = true;
+            this.exportBtn.Click += new System.EventHandler(this.exportBtn_Click);
             // 
             // groupBox6
             // 
@@ -525,6 +525,17 @@
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Pen size";
             // 
+            // selectPenColorBox
+            // 
+            this.selectPenColorBox.BackColor = System.Drawing.Color.Turquoise;
+            this.selectPenColorBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.selectPenColorBox.Location = new System.Drawing.Point(113, 21);
+            this.selectPenColorBox.Name = "selectPenColorBox";
+            this.selectPenColorBox.Size = new System.Drawing.Size(42, 25);
+            this.selectPenColorBox.TabIndex = 4;
+            this.selectPenColorBox.TabStop = false;
+            this.selectPenColorBox.Click += new System.EventHandler(this.selectPenColorBox_Click);
+            // 
             // clearPenBtn
             // 
             this.clearPenBtn.Location = new System.Drawing.Point(55, 110);
@@ -611,22 +622,11 @@
             this.ribbonButton2.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.Image")));
             this.ribbonButton2.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.SmallImage")));
             // 
-            // selectPenColorBox
-            // 
-            this.selectPenColorBox.BackColor = System.Drawing.Color.Turquoise;
-            this.selectPenColorBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.selectPenColorBox.Location = new System.Drawing.Point(113, 21);
-            this.selectPenColorBox.Name = "selectPenColorBox";
-            this.selectPenColorBox.Size = new System.Drawing.Size(42, 25);
-            this.selectPenColorBox.TabIndex = 4;
-            this.selectPenColorBox.TabStop = false;
-            this.selectPenColorBox.Click += new System.EventHandler(this.selectPenColorBox_Click);
-            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1226, 685);
+            this.ClientSize = new System.Drawing.Size(1226, 722);
             this.Controls.Add(this.zoomedImgBox);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox1);
@@ -661,10 +661,10 @@
             this.groupBox13.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).EndInit();
             this.groupBox11.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

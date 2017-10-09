@@ -17,14 +17,15 @@ namespace PandaDigital
 {
     public partial class MainFrm : Form
     {
-        private PandaDigital pandaDigital;
-
+        private int radiusDisplayed = 10;
         private List<PointF> userPoints = new List<PointF>();
+        private List<PointF> autoPoints = new List<PointF>();
         private List<AxisPoint> axisPoints = new List<AxisPoint>();
         private List<PointF> selectedPoints = new List<PointF>();
         private List<Point> currentLine = new List<Point>();
         private List<List<Point>> curves = new List<List<Point>>();
-        
+        public List<PandaColor> imgColors = new List<PandaColor>();
+        public List<PandaColor> pandaColors = new List<PandaColor>();
         private List<int> penSizes = new List<int>();
         private Point zoomedLocation;
         private int drawModePenSize = 30;
@@ -37,8 +38,19 @@ namespace PandaDigital
             InitializeComponent();
             ResizeRedraw = true;
             DoubleBuffered = true;
-           
         }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
+        }
+
+
 
         /* Events */
         private void loadImageMainMenu_Click(object sender, EventArgs e)
@@ -49,13 +61,13 @@ namespace PandaDigital
             fileDialog.Filter = "Image Files (*.bmp;*.jpg;*.jpeg,*.png)|*.BMP;*.JPG;*.JPEG;*.PNG";
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
-            {
-                pandaDigital = new PandaDigital(fileDialog.FileName);
-                imgBox.Image = pandaDigital.PandaImage;
-                FillBgBox();
-                FillCurveBox();
+                imgBox.Image = new Bitmap(fileDialog.FileName);
 
-            }
+            FindColors();
+            FillBgBox();
+            FillCurveBox();
+
+
         }
 
         private void imgBox_MouseMove(object sender, MouseEventArgs e)
@@ -64,17 +76,11 @@ namespace PandaDigital
 
             if (imgBox.Image != null)
             {
-                if (tabControl1.SelectedIndex == 1 )
+                if (tabControl1.SelectedIndex == 1 && drawModeCheckBox.Checked && (e.Button == System.Windows.Forms.MouseButtons.Left))
                 {
-                    if (drawModeCheckBox.Checked)
-                    {
-                        if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                        {
                             currentLine.Add(e.Location);
                             Invalidate(true);
                             Update();
-                        }
-                    }
                 }
                 else
                 {
@@ -187,7 +193,11 @@ namespace PandaDigital
 
         private void exportBtn_Click(object sender, EventArgs e)
         {
-            if (imgBox.Image != null)
+            if (axisPoints.Count != 4)
+            {
+                MessageBox.Show("Enter axis points");
+            }
+            else if (imgBox.Image != null)
             {
                 PointF realPoint;
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -211,7 +221,7 @@ namespace PandaDigital
                         foreach (PointF pixelPoint in userPoints)
                         {
                             realPoint = PixelToReal(pixelPoint);
-                            sw.WriteLine("{0},\t{1}\n", realPoint.X, realPoint.Y);
+                            sw.WriteLine("{0},{1}\n", realPoint.X, realPoint.Y);
                         }
                         sw.Close();
                     }
@@ -229,6 +239,80 @@ namespace PandaDigital
         {
             ShowZoomedImage(zoomedLocation);
             DrawSight(e);
+            DrawInZommedImage(e);    
+        }
+
+        private void DrawInZommedImage(PaintEventArgs e)
+        {
+            foreach (PointF p in userPoints)
+                if (IsInsideZoomedImage(p))
+                    DrawPointInZoomedImage(e, p, Color.Red);
+
+            foreach (PointF p in selectedPoints)
+                if (IsInsideZoomedImage(p))
+                    DrawPointInZoomedImage(e, p, Color.Blue);
+
+            foreach (AxisPoint p in axisPoints)
+                if (IsInsideZoomedImage(p.location))
+                    DrawAxisPointInZoomedImage(e, p.location, GetAxisColorByPoint(p));
+        }
+
+        private Color GetAxisColorByPoint(AxisPoint p)
+        {
+            if (axisPoints.Count != 0)
+                foreach (AxisPoint ap in axisPoints)
+                    if (ap == p)
+                        return ap.color;
+
+            return new Color();
+        }
+
+
+        private void DrawAxisPointInZoomedImage(PaintEventArgs e, PointF point, Color color)
+        {
+            int zoomedPboxWidth, zoomedPboxHeight, size;
+            float x, y, xDiff, yDiff, scale;
+
+            xDiff = point.X - zoomedLocation.X;
+            yDiff = point.Y - zoomedLocation.Y;
+
+            zoomedPboxWidth = zoomedImgBox.Size.Width;
+            zoomedPboxHeight = zoomedImgBox.Size.Height;
+
+            scale = (float)zoomedPboxWidth / (2 * radiusDisplayed);
+            size = 30; 
+
+            x = zoomedPboxWidth / 2 + xDiff * scale;
+            y = zoomedPboxHeight / 2 + yDiff * scale;
+
+            e.Graphics.DrawLine(new Pen(color, 8), x - size, y, x + size, y);
+            e.Graphics.DrawLine(new Pen(color, 8), x, y - size, x, y + size);
+        }
+
+        private void DrawPointInZoomedImage(PaintEventArgs e, PointF point, Color color)
+        {
+            int zoomedPboxWidth, zoomedPboxHeight;
+            float x, y, xDiff, yDiff, scale;
+
+            xDiff = point.X - zoomedLocation.X;
+            yDiff = point.Y - zoomedLocation.Y;
+
+            zoomedPboxWidth = zoomedImgBox.Size.Width;
+            zoomedPboxHeight = zoomedImgBox.Size.Height;
+
+            scale = (float)zoomedPboxWidth / (2 * radiusDisplayed);
+            
+            x = zoomedPboxWidth/2 + xDiff*scale;
+            y = zoomedPboxHeight/2 + yDiff*scale;
+
+            e.Graphics.DrawRectangle(new Pen(color, 4), new Rectangle((int)x - 6, (int)y - 6, 12, 12));
+        }
+
+        private bool IsInsideZoomedImage(PointF p)
+        {
+            if (Math.Abs(zoomedLocation.X - p.X) < radiusDisplayed && Math.Abs(zoomedLocation.Y - p.Y) < radiusDisplayed)
+                return true;
+            return false;
         }
 
         private void imgBox_DragDrop(object sender, DragEventArgs e)
@@ -238,7 +322,7 @@ namespace PandaDigital
                 imgBox.Image = null;
                 string[] filename = (string[])e.Data.GetData(DataFormats.FileDrop);
                 imgBox.Image = Image.FromFile(filename[0]);
-                pandaDigital = new PandaDigital(filename[0]);
+                FindColors();
                 FillBgBox();
                 FillCurveBox();
             }
@@ -296,6 +380,9 @@ namespace PandaDigital
                 selectedPoints.Clear();
 
             }
+
+            Invalidate(true);
+            Update();
         }
 
         private void drawModePictureBox_Paint(object sender, PaintEventArgs e)
@@ -390,8 +477,7 @@ namespace PandaDigital
         /* Drawing */
         private void DrawSight(PaintEventArgs e)
         {
-            int sizeHorExt = 170;
-            int sizeVertExt = 145;
+            
             int radio = 1;
 
             int zoomedPboxWidth, zoomedPboxHeight;
@@ -399,16 +485,16 @@ namespace PandaDigital
             zoomedPboxWidth = zoomedImgBox.Size.Width;
             zoomedPboxHeight = zoomedImgBox.Size.Height;
 
-            base.OnPaint(e);
-            using (GraphicsPath gp = new GraphicsPath())
-            {
-                gp.AddEllipse(0, 0, zoomedImgBox.Width, zoomedImgBox.Height);
-                zoomedImgBox.Region = new Region(gp);
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            }
+            //base.OnPaint(e);
+            //using (GraphicsPath gp = new GraphicsPath())
+            //{
+            //    gp.AddEllipse(0, 0, zoomedImgBox.Width, zoomedImgBox.Height);
+            //    zoomedImgBox.Region = new Region(gp);
+            //    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            //}
             
-            e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth/2, zoomedPboxHeight/2 - sizeVertExt, zoomedPboxWidth/2, zoomedPboxHeight/2 + sizeVertExt);
-            e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth / 2 - sizeHorExt, zoomedPboxHeight / 2, zoomedPboxWidth / 2 + sizeHorExt, zoomedPboxHeight / 2);
+            e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth/2, 0, zoomedPboxWidth/2, zoomedPboxHeight);
+            e.Graphics.DrawLine(new Pen(Color.Red, 1), 0, zoomedPboxHeight / 2, zoomedPboxWidth, zoomedPboxHeight /2);
             e.Graphics.DrawEllipse(new Pen(Color.Red, 5), new Rectangle(zoomedPboxWidth/2 - radio, zoomedPboxHeight/2 - radio, 2*radio, 2*radio));
         }
 
@@ -591,7 +677,7 @@ namespace PandaDigital
             return realPoint;
         }
 
-        private Point GetAxisPointByColor(Color color)
+        private PointF GetAxisPointByColor(Color color)
         {
             if (axisPoints.Count != 0)
                 foreach (AxisPoint ap in axisPoints)
@@ -631,7 +717,6 @@ namespace PandaDigital
         /* Methods for handling zoomed image */
         private void ShowZoomedImage(Point zoomedLocation)
         {
-            int radiusDisplayed = 10;
             Rectangle zoomedArea = new Rectangle(zoomedLocation.X - radiusDisplayed, zoomedLocation.Y - radiusDisplayed, 2 * radiusDisplayed, 2 * radiusDisplayed);
             if (imgBox.Image != null)
             {
@@ -700,7 +785,7 @@ namespace PandaDigital
         private void AutoGetPoints()
         {
             int stepX = 5;
-            int stepY = 2;
+            int stepY = 5;
             int rango = penSizeTrackBar.Value;
             Color pixelColor, curveColor;
             Graphics g = CreateGraphics();
@@ -715,9 +800,9 @@ namespace PandaDigital
                 {
                     foreach (Point p in curve)
                     {
-                        for (int i = p.X - rango; i < p.X + rango; i += 1)
+                        for (int i = p.X - rango; i < p.X + rango; i += stepX)
                         {
-                            for (int j = p.Y - rango; j < p.Y + rango; j++)
+                            for (int j = p.Y - rango; j < p.Y + rango; j+=stepY)
                             {
                                 pixelColor = b.GetPixel(i * b.Width / imgBox.Width, j * b.Height / imgBox.Height);
                                 PointF pf = new PointF(i, j);
@@ -753,7 +838,7 @@ namespace PandaDigital
         {
             ClearCurvesComboBox();
             
-            foreach (PandaColor pandaColor in pandaDigital.PandaColors)
+            foreach (PandaColor pandaColor in pandaColors)
                 curvesColorCmbBox.Items.Add(pandaColor.Color.Name);
         }
 
@@ -761,7 +846,7 @@ namespace PandaDigital
         {
             ClearBgComboBox();
 
-            foreach (PandaColor pandaColor in pandaDigital.PandaColors)
+            foreach (PandaColor pandaColor in pandaColors)
                 bgColorCmbBox.Items.Add(pandaColor.Color.Name);
         }
 
@@ -781,7 +866,33 @@ namespace PandaDigital
                 
             }
         }
+        private void FindColors()
+        {
+            Color pixelColor;
+            Bitmap b = new Bitmap(imgBox.Image);
+            LockBitmap lockBitmap = new LockBitmap(b);
+            lockBitmap.LockBits();
 
+            for (int i = 0; i < lockBitmap.Width; i++)
+            {
+                for (int j = 0; j < lockBitmap.Height; j++)
+                {
+                    pixelColor = lockBitmap.GetPixel(i, j);
+
+                    if (!imgColors.Any(c => c.Color == pixelColor))
+                        imgColors.Add(new PandaColor(pixelColor));
+                    else
+                        imgColors.Where(c => c.Color == pixelColor).ToList()[0].Ocurrencies++;
+                }
+            }
+
+            lockBitmap.UnlockBits();
+
+            if (imgColors.Count >= 6)
+                pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, 6);
+            else
+                pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, imgColors.Count);
+        }
         private void SelectNearestPoint(PointF p)
         {
             float x, y;
@@ -835,6 +946,7 @@ namespace PandaDigital
                 userPoints.Add(p);
             }
         }
+        
 
         /* End of methods for handling zoomed image */
     }
@@ -851,23 +963,4 @@ namespace PandaDigital
 
 
 
-//private void FindColors()
-//{
-//    Color pixelColor;
-//    Bitmap b = new Bitmap(imgBox.Image);
 
-//    for (int i = 0; i < b.Width; i++)
-//    {
-//        for (int j = 0; j < b.Height; j++)
-//        {
-//            pixelColor = b.GetPixel(i, j);
-
-//            if (!imgColors.Any(c => c.Color == pixelColor))
-//                imgColors.Add(new PandaColor(pixelColor));
-//            else
-//                imgColors.Where(c => c.Color == pixelColor).ToList()[0].Ocurrencies++;
-//        }
-//    }
-
-//    pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, 6);
-//}

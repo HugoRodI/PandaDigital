@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="AxisPoint.cs" />
     <Compile Include="Curve.cs" />
+    <Compile Include="LockBitmap.cs" />
     <Compile Include="MainFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,7 +60,6 @@
       <DependentUpon>MainFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="PandaColor.cs" />
-    <Compile Include="PandaDigital.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainFrm.resx">
@@ -90,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\WilcoxResults.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\black.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

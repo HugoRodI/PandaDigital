@@ -10,9 +10,9 @@ namespace PandaDigital
     public class AxisPoint
     {
         public Color color;
-        public Point location;
+        public PointF location;
 
-        public AxisPoint(Point location, Color color)
+        public AxisPoint(PointF location, Color color)
         {
             this.location = location;
             this.color = color;
