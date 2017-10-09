@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
 using System.Text;
 using System.Threading;
@@ -14,25 +17,29 @@ namespace PandaDigital
 {
     public partial class MainFrm : Form
     {
-        private Point lastPoint = Point.Empty;
-        private Point endPoint = Point.Empty;
-        private List<Point> userPoints = new List<Point>();
+        private PandaDigital pandaDigital;
+
+        private List<PointF> userPoints = new List<PointF>();
         private List<AxisPoint> axisPoints = new List<AxisPoint>();
-        private int axisCtr;
-        private Point zoomedLocation;
-        private int drawModePenSize = 30;
+        private List<PointF> selectedPoints = new List<PointF>();
         private List<Point> currentLine = new List<Point>();
         private List<List<Point>> curves = new List<List<Point>>();
+        
+        private List<int> penSizes = new List<int>();
+        private Point zoomedLocation;
+        private int drawModePenSize = 30;
+       
+        private Color userPenColor = Color.Turquoise;
+        private List<Color> colorList = new List<Color>(); 
 
         public MainFrm()
         {
             InitializeComponent();
-            
+            ResizeRedraw = true;
             DoubleBuffered = true;
-
-            axisCtr = 0;
+           
         }
-        
+
         /* Events */
         private void loadImageMainMenu_Click(object sender, EventArgs e)
         {
@@ -42,12 +49,18 @@ namespace PandaDigital
             fileDialog.Filter = "Image Files (*.bmp;*.jpg;*.jpeg,*.png)|*.BMP;*.JPG;*.JPEG;*.PNG";
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
-                imgBox.Image = new Bitmap(fileDialog.FileName);
+            {
+                pandaDigital = new PandaDigital(fileDialog.FileName);
+                imgBox.Image = pandaDigital.PandaImage;
+                FillBgBox();
+                FillCurveBox();
+
+            }
         }
 
         private void imgBox_MouseMove(object sender, MouseEventArgs e)
         {
-            int size = 30;
+            int size = 0;
 
             if (imgBox.Image != null)
             {
@@ -80,21 +93,36 @@ namespace PandaDigital
         {
             if (imgBox.Image != null & (tabControl1.SelectedIndex == 0))
             {
-                if (userRadioBtn.Checked)
-                    userPoints.Add(e.Location);
-                else if (x1RadioButton.Checked)
-                    InitAxis(e.Location, 1);
-                else if (x2RadioButton.Checked)
-                    InitAxis(e.Location, 2);
-                else if (y1RadioButton.Checked)
-                    InitAxis(e.Location, 3);
-                else if (y2RadioButton.Checked)
-                    InitAxis(e.Location, 4);
+                if (e.Button == MouseButtons.Left)
+                {
+                    if (userRadioBtn.Checked)
+                        userPoints.Add(e.Location);
+                    else if (x1RadioButton.Checked)
+                        InitAxis(e.Location, 1);
+                    else if (x2RadioButton.Checked)
+                        InitAxis(e.Location, 2);
+                    else if (y1RadioButton.Checked)
+                        InitAxis(e.Location, 3);
+                    else if (y2RadioButton.Checked)
+                        InitAxis(e.Location, 4);
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    SelectNearestPoint(e.Location);
+                }
             }
 
             Invalidate(true);
             Update();
+        }
 
+        private void RemoveFromList(List<PointF> list, PointF p1)
+        {
+            foreach (PointF p2 in list.Reverse<PointF>())
+            {
+                if (p1 == p2)
+                    list.Remove(p1);
+            }
         }
 
         private void deletePrevBtn_Click(object sender, EventArgs e)
@@ -180,7 +208,7 @@ namespace PandaDigital
 
                     using (StreamWriter sw = File.AppendText(path))
                     {
-                        foreach (Point pixelPoint in userPoints)
+                        foreach (PointF pixelPoint in userPoints)
                         {
                             realPoint = PixelToReal(pixelPoint);
                             sw.WriteLine("{0},\t{1}\n", realPoint.X, realPoint.Y);
@@ -210,6 +238,9 @@ namespace PandaDigital
                 imgBox.Image = null;
                 string[] filename = (string[])e.Data.GetData(DataFormats.FileDrop);
                 imgBox.Image = Image.FromFile(filename[0]);
+                pandaDigital = new PandaDigital(filename[0]);
+                FillBgBox();
+                FillCurveBox();
             }
             catch (OutOfMemoryException ex)
             {
@@ -233,7 +264,6 @@ namespace PandaDigital
 
         private void MainFrm_KeyDown(object sender, KeyEventArgs e)
         {
-
             if (e.Control)
             {
                 if (e.KeyCode == Keys.D)
@@ -247,7 +277,113 @@ namespace PandaDigital
                     th.Join();
                     //ExportUserPoints();
                 }
+                
             }
+        }
+
+        private void MainFrm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 8 || e.KeyChar == 127)
+            {
+                selectedPoints.Clear();
+
+            }
+            else if (e.KeyChar == 27)
+            {
+                foreach (PointF p in selectedPoints)
+                    userPoints.Add(p);
+                
+                selectedPoints.Clear();
+
+            }
+        }
+
+        private void drawModePictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            DrawModeLine(e);
+        }
+
+        private void penSizeTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            drawModePenSize = penSizeTrackBar.Value;
+            drawModePictureBox.Invalidate(true);
+            drawModePictureBox.Update();
+        }
+
+        private void imgBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (imgBox.Image != null)
+            {
+                if (tabControl1.SelectedIndex == 1)
+                {
+                    if (drawModeCheckBox.Checked)
+                    {
+                        if (currentLine.Count > 1)
+                        {
+                            penSizes.Add(drawModePenSize);
+                            curves.Add(currentLine.ToList());
+                        }
+                        currentLine.Clear();
+                        Invalidate(true);
+                        Update();
+                    }
+                }
+            }
+        }
+
+        private void curvesColorCmbBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Rectangle rect = e.Bounds;
+
+            if (e.Index >= 0)
+            {
+                string n = "0x" + ((ComboBox)sender).Items[e.Index].ToString();
+                int i = Convert.ToInt32(n, 16);
+                Color c = Color.FromArgb(i);
+                Brush b = new SolidBrush(c);
+
+                g.FillRectangle(b, rect.X + 2, rect.Y + 2, rect.Width - 2, rect.Height - 2);
+            }
+        }
+
+        private void getPointsBtn_Click(object sender, EventArgs e)
+        {
+            AutoGetPoints();
+            Invalidate(true);
+            Update();
+        }
+
+        private void bgColorCmbBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Rectangle rect = e.Bounds;
+
+            if (e.Index >= 0)
+            {
+                string n = "0x" + ((ComboBox)sender).Items[e.Index].ToString();
+                int i = Convert.ToInt32(n, 16);
+                Color c = Color.FromArgb(i);
+                Brush b = new SolidBrush(c);
+
+                g.FillRectangle(b, rect.X + 2, rect.Y + 2, rect.Width - 2, rect.Height - 2);
+            }
+        }
+
+        private void clearPenBtn_Click(object sender, EventArgs e)
+        {
+            ClearPen();
+        }
+
+        private void selectPenColorBox_Click(object sender, EventArgs e)
+        {
+            Thread th = new Thread(new ThreadStart(SelectPenColor));
+            th.Start();
+            th.Join();
+            Invalidate(true);
+            Update();
+
+
         }
         /* End of events */
 
@@ -263,6 +399,14 @@ namespace PandaDigital
             zoomedPboxWidth = zoomedImgBox.Size.Width;
             zoomedPboxHeight = zoomedImgBox.Size.Height;
 
+            base.OnPaint(e);
+            using (GraphicsPath gp = new GraphicsPath())
+            {
+                gp.AddEllipse(0, 0, zoomedImgBox.Width, zoomedImgBox.Height);
+                zoomedImgBox.Region = new Region(gp);
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            }
+            
             e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth/2, zoomedPboxHeight/2 - sizeVertExt, zoomedPboxWidth/2, zoomedPboxHeight/2 + sizeVertExt);
             e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth / 2 - sizeHorExt, zoomedPboxHeight / 2, zoomedPboxWidth / 2 + sizeHorExt, zoomedPboxHeight / 2);
             e.Graphics.DrawEllipse(new Pen(Color.Red, 5), new Rectangle(zoomedPboxWidth/2 - radio, zoomedPboxHeight/2 - radio, 2*radio, 2*radio));
@@ -271,21 +415,48 @@ namespace PandaDigital
         private void Draw(PaintEventArgs e)
         {
             DrawAxis(e);
-            DrawUserPoints(e);
+            
             DrawUserAutoLine(e);
+            DrawAutoPoints(e);
+            DrawSelectedPoints(e);
+            DrawUserPoints(e);
+        }
+
+        private void DrawSelectedPoints(PaintEventArgs e)
+        {
+            if (selectedPoints.Count != 0)
+                foreach (PointF p in selectedPoints)
+                    e.Graphics.DrawRectangle(new Pen(Color.Blue, 2), new Rectangle((int)p.X - 2, (int)p.Y - 2, 4, 4));
+        }
+
+        private void DrawAutoPoints(PaintEventArgs e)
+        {
+            if (autoPoints.Count != 0)
+                foreach (PointF p in autoPoints)
+                    e.Graphics.DrawRectangle(new Pen(Color.Red, 2), new Rectangle((int)p.X - 2, (int)p.Y - 2, 4, 4));
         }
 
         private void DrawUserAutoLine(PaintEventArgs e)
         {
             if (imgBox.Image != null)
             {
-                using (Pen pen = new Pen(Color.Red, drawModePenSize))
+                if (curves.Count > 0)
                 {
-                    if (currentLine.Count > 1)
-                        e.Graphics.DrawCurve(pen, currentLine.ToArray());
+                    Pen pen = new Pen(userPenColor, drawModePenSize);
 
+                    if (currentLine.Count > 1)
+                    {
+                        e.Graphics.DrawCurve(pen, currentLine.ToArray());
+                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    }
+                    int cont = 0;
                     foreach (List<Point> curve in curves)
+                    {
+                        pen = new Pen(userPenColor, penSizes[cont]);
                         e.Graphics.DrawCurve(pen, curve.ToArray());
+                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        cont++;
+                    }
                 }
             }
         }
@@ -304,8 +475,8 @@ namespace PandaDigital
         private void DrawUserPoints(PaintEventArgs e)
         {
             if (userPoints.Count != 0)
-                foreach (Point p in userPoints)
-                    e.Graphics.DrawRectangle(new Pen(Color.Red, 2), new Rectangle(p.X - 2, p.Y - 2, 4, 4));
+                foreach (PointF p in userPoints)
+                    e.Graphics.DrawRectangle(new Pen(Color.Red, 2), new Rectangle((int)p.X - 2, (int)p.Y - 2, 4, 4));
         }
         /* End of drawing*/
 
@@ -381,7 +552,7 @@ namespace PandaDigital
         /* End of methods for handling axis UI */
 
         /* Methods for getting real size points */
-        private PointF PixelToReal(Point pixelPoint)
+        private PointF PixelToReal(PointF pixelPoint)
         {
             float x, y;
             double x1, x2, y1, y2;
@@ -460,8 +631,8 @@ namespace PandaDigital
         /* Methods for handling zoomed image */
         private void ShowZoomedImage(Point zoomedLocation)
         {
-            int size = 30;
-            Rectangle zoomedArea = new Rectangle(zoomedLocation.X - size, zoomedLocation.Y - size, 2 * size, 2 * size);
+            int radiusDisplayed = 10;
+            Rectangle zoomedArea = new Rectangle(zoomedLocation.X - radiusDisplayed, zoomedLocation.Y - radiusDisplayed, 2 * radiusDisplayed, 2 * radiusDisplayed);
             if (imgBox.Image != null)
             {
                 Bitmap myBitmap = new Bitmap(imgBox.Image, new Size(imgBox.Size.Width, imgBox.Size.Height));
@@ -484,21 +655,6 @@ namespace PandaDigital
             return bmp;
         }
 
-        
-
-
-
-
-
-       
-        private void bgColorBtn_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                bgColorPicBox.BackColor = colorDialog1.Color;
-            }
-        }
-        
         private void DrawModeLine(PaintEventArgs e)
         {
             float x1, y1, x2, y2, dmPboxWidth, dmPboxHeight, margin;
@@ -512,47 +668,206 @@ namespace PandaDigital
             x2 = dmPboxWidth - margin;
             y2 = dmPboxHeight / 2;
             
-            e.Graphics.DrawLine(new Pen(Color.Red, drawModePenSize), x1, y1, x2, y2);
+            e.Graphics.DrawLine(new Pen(userPenColor, drawModePenSize), x1, y1, x2, y2);
 
         }
-
-        private void drawModePictureBox_Paint(object sender, PaintEventArgs e)
+        
+        private void EmptyColorList()
         {
-            DrawModeLine(e);
+            colorList.Clear();
         }
 
-        private void penSizeTrackBar_ValueChanged(object sender, EventArgs e)
+        private void ClearCurvesComboBox()
         {
-            drawModePenSize = penSizeTrackBar.Value;
-            drawModePictureBox.Invalidate(true);
-            drawModePictureBox.Update();
+            curvesColorCmbBox.Items.Clear();
         }
 
-        private void imgBox_MouseUp(object sender, MouseEventArgs e)
+        private void ClearBgComboBox()
         {
-            if (imgBox.Image != null)
+            bgColorCmbBox.Items.Clear();
+        }
+        
+        
+        
+        private bool ColorsAreEqual(Color c1, Color c2)
+        {
+            if(c1.Name.Equals(c2.Name))//if ((c1.A == c2.A) && (c1.R == c2.R) && (c1.G == c2.G) && (c1.B == c2.B))
+                return true;
+
+            return false;
+        }
+
+        private void AutoGetPoints()
+        {
+            int stepX = 5;
+            int stepY = 2;
+            int rango = penSizeTrackBar.Value;
+            Color pixelColor, curveColor;
+            Graphics g = CreateGraphics();
+            Bitmap b = new Bitmap(imgBox.Image);
+            float factorX = (float)imgBox.Width / b.Width;
+            float factorY = (float)imgBox.Height / b.Height;
+            curveColor = Color.FromName((curvesColorCmbBox.SelectedItem).ToString());
+
+            if (curves.Count > 0 && curves[0].Count > 0)
             {
-                if (tabControl1.SelectedIndex == 1)
+                foreach (List<Point> curve in curves)
                 {
-                    if (drawModeCheckBox.Checked)
+                    foreach (Point p in curve)
                     {
-                        if (currentLine.Count > 1)
-                            curves.Add(currentLine.ToList());
-                        currentLine.Clear();
-                        Invalidate(true);
-                        Update();
+                        for (int i = p.X - rango; i < p.X + rango; i += 1)
+                        {
+                            for (int j = p.Y - rango; j < p.Y + rango; j++)
+                            {
+                                pixelColor = b.GetPixel(i * b.Width / imgBox.Width, j * b.Height / imgBox.Height);
+                                PointF pf = new PointF(i, j);
+
+                                if (ColorsAreEqual(pixelColor, curveColor))
+                                    userPoints.Add(pf);
+                            }
+                        }
                     }
                 }
             }
+            else
+            {
+                for (int i = 0; i < b.Width; i += stepX)
+                {
+                    for (int j = 0; j < b.Height; j += stepY)
+                    {
+                        pixelColor = b.GetPixel(i, j);
+                        PointF p = new PointF(i * factorX, j * factorY);
+
+                        if (ColorsAreEqual(pixelColor, curveColor))
+                            userPoints.Add(p);
+
+                    }
+                }
+            }
+
+            
         }
-        
 
+      
+        private void FillCurveBox()
+        {
+            ClearCurvesComboBox();
+            
+            foreach (PandaColor pandaColor in pandaDigital.PandaColors)
+                curvesColorCmbBox.Items.Add(pandaColor.Color.Name);
+        }
 
+        private void FillBgBox()
+        {
+            ClearBgComboBox();
+
+            foreach (PandaColor pandaColor in pandaDigital.PandaColors)
+                bgColorCmbBox.Items.Add(pandaColor.Color.Name);
+        }
+
+        private void ClearPen()
+        {
+            curves.Clear();
+            Invalidate(true);
+            Update();
+        }
+
+        private void SelectPenColor()
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                userPenColor = colorDialog1.Color;
+                selectPenColorBox.BackColor = userPenColor;
+                
+            }
+        }
+
+        private void SelectNearestPoint(PointF p)
+        {
+            float x, y;
+            float difx, dify;
+            double min = 1e12;
+            double distanceBetweenPoints;
+
+            x = p.X;
+            y = p.Y;
+
+            if (userPoints.Count != 0)
+            {
+                foreach (PointF up in userPoints)
+                {
+                    difx = x - up.X;
+                    dify = y - up.Y;
+
+                    distanceBetweenPoints = Math.Sqrt(Math.Pow(difx, 2) + Math.Pow(dify, 2));
+                    if (distanceBetweenPoints < min)
+                    {
+                        p = up;
+                        min = distanceBetweenPoints;
+                    }
+                }
+            }
+
+            if (selectedPoints.Count != 0)
+            {
+                foreach (PointF sp in selectedPoints)
+                {
+                    difx = x - sp.X;
+                    dify = y - sp.Y;
+
+                    distanceBetweenPoints = Math.Sqrt(Math.Pow(difx, 2) + Math.Pow(dify, 2));
+                    if (distanceBetweenPoints < min)
+                    {
+                        p = sp;
+                        min = distanceBetweenPoints;
+                    }
+                }
+            }
+
+            if (userPoints.Any(pt => pt == p))
+            {
+                RemoveFromList(userPoints, p);
+                selectedPoints.Add(p);
+            }
+            else if (selectedPoints.Any(pt => pt == p))
+            {
+                RemoveFromList(selectedPoints, p);
+                userPoints.Add(p);
+            }
+        }
 
         /* End of methods for handling zoomed image */
-
-
-
-
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+//private void FindColors()
+//{
+//    Color pixelColor;
+//    Bitmap b = new Bitmap(imgBox.Image);
+
+//    for (int i = 0; i < b.Width; i++)
+//    {
+//        for (int j = 0; j < b.Height; j++)
+//        {
+//            pixelColor = b.GetPixel(i, j);
+
+//            if (!imgColors.Any(c => c.Color == pixelColor))
+//                imgColors.Add(new PandaColor(pixelColor));
+//            else
+//                imgColors.Where(c => c.Color == pixelColor).ToList()[0].Ocurrencies++;
+//        }
+//    }
+
+//    pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, 6);
+//}

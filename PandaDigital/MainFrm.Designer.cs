@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileMainMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.loadImageMainMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -35,7 +36,6 @@
             this.imgBox = new System.Windows.Forms.PictureBox();
             this.zoomedImgBox = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -43,6 +43,7 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.deletePrevBtn = new System.Windows.Forms.Button();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.deleteAllBtn = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.y2RadioButton = new System.Windows.Forms.RadioButton();
             this.y1RadioButton = new System.Windows.Forms.RadioButton();
@@ -66,22 +67,23 @@
             this.linearRadioButtonX = new System.Windows.Forms.RadioButton();
             this.autoTabPage = new System.Windows.Forms.TabPage();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.curvesColorCmbBox = new System.Windows.Forms.ComboBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.clearPenBtn = new System.Windows.Forms.Button();
             this.drawModePictureBox = new System.Windows.Forms.PictureBox();
             this.drawModeCheckBox = new System.Windows.Forms.CheckBox();
             this.penSizeTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.bgColorPicBox = new System.Windows.Forms.PictureBox();
-            this.bgColorBtn = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.bgColorCmbBox = new System.Windows.Forms.ComboBox();
+            this.getPointsBtn = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.deleteAllBtn = new System.Windows.Forms.Button();
+            this.ribbonButton1 = new System.Windows.Forms.RibbonButton();
+            this.ribbonButton2 = new System.Windows.Forms.RibbonButton();
+            this.selectPenColorBox = new System.Windows.Forms.PictureBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomedImgBox)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.manualTabPage.SuspendLayout();
             this.groupBox10.SuspendLayout();
@@ -98,7 +100,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).BeginInit();
             this.groupBox11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bgColorPicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -153,9 +155,9 @@
             // zoomedImgBox
             // 
             this.zoomedImgBox.BackColor = System.Drawing.Color.White;
-            this.zoomedImgBox.Location = new System.Drawing.Point(4, 19);
+            this.zoomedImgBox.Location = new System.Drawing.Point(870, 56);
             this.zoomedImgBox.Name = "zoomedImgBox";
-            this.zoomedImgBox.Size = new System.Drawing.Size(334, 288);
+            this.zoomedImgBox.Size = new System.Drawing.Size(340, 288);
             this.zoomedImgBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.zoomedImgBox.TabIndex = 2;
             this.zoomedImgBox.TabStop = false;
@@ -170,16 +172,6 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Image:";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.zoomedImgBox);
-            this.groupBox2.Location = new System.Drawing.Point(870, 37);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(344, 313);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Zoomed image:";
             // 
             // openFileDialog1
             // 
@@ -246,6 +238,17 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Ctrl+A";
             // 
+            // deleteAllBtn
+            // 
+            this.deleteAllBtn.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.deleteAllBtn.Location = new System.Drawing.Point(5, 18);
+            this.deleteAllBtn.Name = "deleteAllBtn";
+            this.deleteAllBtn.Size = new System.Drawing.Size(75, 38);
+            this.deleteAllBtn.TabIndex = 7;
+            this.deleteAllBtn.Text = "Delete all";
+            this.deleteAllBtn.UseVisualStyleBackColor = true;
+            this.deleteAllBtn.Click += new System.EventHandler(this.deleteAllBtn_Click);
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.y2RadioButton);
@@ -272,6 +275,7 @@
             this.y2RadioButton.TabIndex = 11;
             this.y2RadioButton.Text = "Set y2";
             this.y2RadioButton.UseVisualStyleBackColor = true;
+            this.y2RadioButton.CheckedChanged += new System.EventHandler(this.y2RadioButton_CheckedChanged);
             // 
             // y1RadioButton
             // 
@@ -282,6 +286,7 @@
             this.y1RadioButton.TabIndex = 10;
             this.y1RadioButton.Text = "Set y1";
             this.y1RadioButton.UseVisualStyleBackColor = true;
+            this.y1RadioButton.CheckedChanged += new System.EventHandler(this.y1RadioButton_CheckedChanged);
             // 
             // y2TextBox
             // 
@@ -308,6 +313,7 @@
             this.x2RadioButton.TabIndex = 7;
             this.x2RadioButton.Text = "Set x2";
             this.x2RadioButton.UseVisualStyleBackColor = true;
+            this.x2RadioButton.CheckedChanged += new System.EventHandler(this.x2RadioButton_CheckedChanged);
             // 
             // x1RadioButton
             // 
@@ -320,6 +326,7 @@
             this.x1RadioButton.TabStop = true;
             this.x1RadioButton.Text = "Set x1";
             this.x1RadioButton.UseVisualStyleBackColor = true;
+            this.x1RadioButton.CheckedChanged += new System.EventHandler(this.x1RadioButton_CheckedChanged);
             // 
             // x2TextBox
             // 
@@ -379,6 +386,7 @@
             this.axisRadioBtn.TabStop = true;
             this.axisRadioBtn.Text = "Axis points";
             this.axisRadioBtn.UseVisualStyleBackColor = true;
+            this.axisRadioBtn.CheckedChanged += new System.EventHandler(this.axisRadioBtn_CheckedChanged);
             // 
             // userRadioBtn
             // 
@@ -389,6 +397,7 @@
             this.userRadioBtn.TabIndex = 9;
             this.userRadioBtn.Text = "User points";
             this.userRadioBtn.UseVisualStyleBackColor = true;
+            this.userRadioBtn.CheckedChanged += new System.EventHandler(this.userRadioBtn_CheckedChanged);
             // 
             // groupBox4
             // 
@@ -472,7 +481,7 @@
             this.autoTabPage.Controls.Add(this.groupBox13);
             this.autoTabPage.Controls.Add(this.groupBox12);
             this.autoTabPage.Controls.Add(this.groupBox11);
-            this.autoTabPage.Controls.Add(this.button1);
+            this.autoTabPage.Controls.Add(this.getPointsBtn);
             this.autoTabPage.Location = new System.Drawing.Point(4, 29);
             this.autoTabPage.Name = "autoTabPage";
             this.autoTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -483,42 +492,56 @@
             // 
             // groupBox13
             // 
-            this.groupBox13.Controls.Add(this.comboBox1);
-            this.groupBox13.Location = new System.Drawing.Point(25, 195);
+            this.groupBox13.Controls.Add(this.curvesColorCmbBox);
+            this.groupBox13.Location = new System.Drawing.Point(25, 54);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Size = new System.Drawing.Size(279, 53);
             this.groupBox13.TabIndex = 6;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Curve color";
             // 
-            // comboBox1
+            // curvesColorCmbBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(77, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 6;
-            this.comboBox1.Text = "        Select color";
+            this.curvesColorCmbBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.curvesColorCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.curvesColorCmbBox.FormattingEnabled = true;
+            this.curvesColorCmbBox.Location = new System.Drawing.Point(149, 20);
+            this.curvesColorCmbBox.Name = "curvesColorCmbBox";
+            this.curvesColorCmbBox.Size = new System.Drawing.Size(121, 21);
+            this.curvesColorCmbBox.TabIndex = 6;
+            this.curvesColorCmbBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.curvesColorCmbBox_DrawItem);
             // 
             // groupBox12
             // 
+            this.groupBox12.Controls.Add(this.selectPenColorBox);
+            this.groupBox12.Controls.Add(this.clearPenBtn);
             this.groupBox12.Controls.Add(this.drawModePictureBox);
             this.groupBox12.Controls.Add(this.drawModeCheckBox);
             this.groupBox12.Controls.Add(this.penSizeTrackBar);
-            this.groupBox12.Location = new System.Drawing.Point(25, 82);
+            this.groupBox12.Location = new System.Drawing.Point(25, 111);
             this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(279, 107);
+            this.groupBox12.Size = new System.Drawing.Size(305, 139);
             this.groupBox12.TabIndex = 5;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Pen size";
+            // 
+            // clearPenBtn
+            // 
+            this.clearPenBtn.Location = new System.Drawing.Point(55, 110);
+            this.clearPenBtn.Name = "clearPenBtn";
+            this.clearPenBtn.Size = new System.Drawing.Size(75, 23);
+            this.clearPenBtn.TabIndex = 3;
+            this.clearPenBtn.Text = "Clear pen";
+            this.clearPenBtn.UseVisualStyleBackColor = true;
+            this.clearPenBtn.Click += new System.EventHandler(this.clearPenBtn_Click);
             // 
             // drawModePictureBox
             // 
             this.drawModePictureBox.BackColor = System.Drawing.Color.White;
             this.drawModePictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.drawModePictureBox.Location = new System.Drawing.Point(151, 21);
+            this.drawModePictureBox.Location = new System.Drawing.Point(171, 21);
             this.drawModePictureBox.Name = "drawModePictureBox";
-            this.drawModePictureBox.Size = new System.Drawing.Size(122, 80);
+            this.drawModePictureBox.Size = new System.Drawing.Size(128, 112);
             this.drawModePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.drawModePictureBox.TabIndex = 2;
             this.drawModePictureBox.TabStop = false;
@@ -527,7 +550,7 @@
             // drawModeCheckBox
             // 
             this.drawModeCheckBox.AutoSize = true;
-            this.drawModeCheckBox.Location = new System.Drawing.Point(37, 25);
+            this.drawModeCheckBox.Location = new System.Drawing.Point(6, 27);
             this.drawModeCheckBox.Name = "drawModeCheckBox";
             this.drawModeCheckBox.Size = new System.Drawing.Size(80, 17);
             this.drawModeCheckBox.TabIndex = 1;
@@ -536,11 +559,11 @@
             // 
             // penSizeTrackBar
             // 
-            this.penSizeTrackBar.Location = new System.Drawing.Point(37, 54);
+            this.penSizeTrackBar.Location = new System.Drawing.Point(6, 58);
             this.penSizeTrackBar.Maximum = 60;
             this.penSizeTrackBar.Minimum = 15;
             this.penSizeTrackBar.Name = "penSizeTrackBar";
-            this.penSizeTrackBar.Size = new System.Drawing.Size(104, 45);
+            this.penSizeTrackBar.Size = new System.Drawing.Size(159, 45);
             this.penSizeTrackBar.SmallChange = 5;
             this.penSizeTrackBar.TabIndex = 0;
             this.penSizeTrackBar.TickFrequency = 5;
@@ -549,62 +572,63 @@
             // 
             // groupBox11
             // 
-            this.groupBox11.Controls.Add(this.bgColorPicBox);
-            this.groupBox11.Controls.Add(this.bgColorBtn);
-            this.groupBox11.Location = new System.Drawing.Point(25, 15);
+            this.groupBox11.Controls.Add(this.bgColorCmbBox);
+            this.groupBox11.Location = new System.Drawing.Point(25, 8);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(279, 56);
+            this.groupBox11.Size = new System.Drawing.Size(279, 46);
             this.groupBox11.TabIndex = 2;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Background color";
             // 
-            // bgColorPicBox
+            // bgColorCmbBox
             // 
-            this.bgColorPicBox.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.bgColorPicBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.bgColorPicBox.Location = new System.Drawing.Point(196, 24);
-            this.bgColorPicBox.Name = "bgColorPicBox";
-            this.bgColorPicBox.Size = new System.Drawing.Size(20, 20);
-            this.bgColorPicBox.TabIndex = 2;
-            this.bgColorPicBox.TabStop = false;
+            this.bgColorCmbBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.bgColorCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.bgColorCmbBox.FormattingEnabled = true;
+            this.bgColorCmbBox.Location = new System.Drawing.Point(149, 19);
+            this.bgColorCmbBox.Name = "bgColorCmbBox";
+            this.bgColorCmbBox.Size = new System.Drawing.Size(121, 21);
+            this.bgColorCmbBox.TabIndex = 7;
+            this.bgColorCmbBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.bgColorCmbBox_DrawItem);
             // 
-            // bgColorBtn
+            // getPointsBtn
             // 
-            this.bgColorBtn.Location = new System.Drawing.Point(28, 22);
-            this.bgColorBtn.Name = "bgColorBtn";
-            this.bgColorBtn.Size = new System.Drawing.Size(157, 23);
-            this.bgColorBtn.TabIndex = 1;
-            this.bgColorBtn.Text = "Select color";
-            this.bgColorBtn.UseVisualStyleBackColor = true;
-            this.bgColorBtn.Click += new System.EventHandler(this.bgColorBtn_Click);
+            this.getPointsBtn.Location = new System.Drawing.Point(128, 261);
+            this.getPointsBtn.Name = "getPointsBtn";
+            this.getPointsBtn.Size = new System.Drawing.Size(75, 23);
+            this.getPointsBtn.TabIndex = 0;
+            this.getPointsBtn.Text = "Get points";
+            this.getPointsBtn.UseVisualStyleBackColor = true;
+            this.getPointsBtn.Click += new System.EventHandler(this.getPointsBtn_Click);
             // 
-            // button1
+            // ribbonButton1
             // 
-            this.button1.Location = new System.Drawing.Point(128, 258);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.ribbonButton1.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton1.Image")));
+            this.ribbonButton1.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton1.SmallImage")));
             // 
-            // deleteAllBtn
+            // ribbonButton2
             // 
-            this.deleteAllBtn.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.deleteAllBtn.Location = new System.Drawing.Point(5, 18);
-            this.deleteAllBtn.Name = "deleteAllBtn";
-            this.deleteAllBtn.Size = new System.Drawing.Size(75, 38);
-            this.deleteAllBtn.TabIndex = 7;
-            this.deleteAllBtn.Text = "Delete all";
-            this.deleteAllBtn.UseVisualStyleBackColor = true;
-            this.deleteAllBtn.Click += new System.EventHandler(this.deleteAllBtn_Click);
+            this.ribbonButton2.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.Image")));
+            this.ribbonButton2.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.SmallImage")));
+            // 
+            // selectPenColorBox
+            // 
+            this.selectPenColorBox.BackColor = System.Drawing.Color.Turquoise;
+            this.selectPenColorBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.selectPenColorBox.Location = new System.Drawing.Point(113, 21);
+            this.selectPenColorBox.Name = "selectPenColorBox";
+            this.selectPenColorBox.Size = new System.Drawing.Size(42, 25);
+            this.selectPenColorBox.TabIndex = 4;
+            this.selectPenColorBox.TabStop = false;
+            this.selectPenColorBox.Click += new System.EventHandler(this.selectPenColorBox_Click);
             // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1226, 686);
+            this.ClientSize = new System.Drawing.Size(1226, 685);
+            this.Controls.Add(this.zoomedImgBox);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.mainMenu);
             this.MainMenuStrip = this.mainMenu;
@@ -613,12 +637,12 @@
             this.Text = "PandaDigital";
             this.Load += new System.EventHandler(this.MainFrm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainFrm_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainFrm_KeyPress);
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomedImgBox)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.manualTabPage.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
@@ -640,7 +664,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).EndInit();
             this.groupBox11.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.bgColorPicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -655,7 +679,6 @@
         private System.Windows.Forms.PictureBox imgBox;
         private System.Windows.Forms.PictureBox zoomedImgBox;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.TabControl tabControl1;
@@ -685,18 +708,21 @@
         private System.Windows.Forms.RadioButton logRadioButtonX;
         private System.Windows.Forms.RadioButton linearRadioButtonX;
         private System.Windows.Forms.TabPage autoTabPage;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button getPointsBtn;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.GroupBox groupBox11;
-        private System.Windows.Forms.PictureBox bgColorPicBox;
-        private System.Windows.Forms.Button bgColorBtn;
         private System.Windows.Forms.GroupBox groupBox13;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox curvesColorCmbBox;
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.TrackBar penSizeTrackBar;
         private System.Windows.Forms.PictureBox drawModePictureBox;
         private System.Windows.Forms.CheckBox drawModeCheckBox;
         private System.Windows.Forms.Button deleteAllBtn;
+        private System.Windows.Forms.ComboBox bgColorCmbBox;
+        private System.Windows.Forms.Button clearPenBtn;
+        private System.Windows.Forms.RibbonButton ribbonButton1;
+        private System.Windows.Forms.RibbonButton ribbonButton2;
+        private System.Windows.Forms.PictureBox selectPenColorBox;
     }
 }
 
