@@ -17,6 +17,12 @@ namespace PandaDigital
 {
     public partial class MainFrm : Form
     {
+        private const int CENTER_ELLIPSE_SIGHT_RADIUS = 1;
+        private const int NUMBER_OF_DOMINANT_COLORS = 6;
+
+        Pen sightLinePen = new Pen(Color.Red, 1);
+        Pen sightEllipsePen = new Pen(Color.Red, 5);
+        
         private int radiusDisplayed = 10;
         private List<PointF> userPoints = new List<PointF>();
         private List<PointF> autoPoints = new List<PointF>();
@@ -63,7 +69,7 @@ namespace PandaDigital
             if (fileDialog.ShowDialog() == DialogResult.OK)
                 imgBox.Image = new Bitmap(fileDialog.FileName);
 
-            FindColors();
+            GetDominantColorsInImage();
             FillBgBox();
             FillCurveBox();
 
@@ -266,8 +272,7 @@ namespace PandaDigital
 
             return new Color();
         }
-
-
+        
         private void DrawAxisPointInZoomedImage(PaintEventArgs e, PointF point, Color color)
         {
             int zoomedPboxWidth, zoomedPboxHeight, size;
@@ -322,7 +327,7 @@ namespace PandaDigital
                 imgBox.Image = null;
                 string[] filename = (string[])e.Data.GetData(DataFormats.FileDrop);
                 imgBox.Image = Image.FromFile(filename[0]);
-                FindColors();
+                GetDominantColorsInImage();
                 FillBgBox();
                 FillCurveBox();
             }
@@ -477,25 +482,14 @@ namespace PandaDigital
         /* Drawing */
         private void DrawSight(PaintEventArgs e)
         {
-            
-            int radio = 1;
-
             int zoomedPboxWidth, zoomedPboxHeight;
 
             zoomedPboxWidth = zoomedImgBox.Size.Width;
             zoomedPboxHeight = zoomedImgBox.Size.Height;
-
-            //base.OnPaint(e);
-            //using (GraphicsPath gp = new GraphicsPath())
-            //{
-            //    gp.AddEllipse(0, 0, zoomedImgBox.Width, zoomedImgBox.Height);
-            //    zoomedImgBox.Region = new Region(gp);
-            //    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            //}
             
-            e.Graphics.DrawLine(new Pen(Color.Red, 1), zoomedPboxWidth/2, 0, zoomedPboxWidth/2, zoomedPboxHeight);
-            e.Graphics.DrawLine(new Pen(Color.Red, 1), 0, zoomedPboxHeight / 2, zoomedPboxWidth, zoomedPboxHeight /2);
-            e.Graphics.DrawEllipse(new Pen(Color.Red, 5), new Rectangle(zoomedPboxWidth/2 - radio, zoomedPboxHeight/2 - radio, 2*radio, 2*radio));
+            e.Graphics.DrawLine(sightLinePen, zoomedPboxWidth/2, 0, zoomedPboxWidth/2, zoomedPboxHeight);
+            e.Graphics.DrawLine(sightLinePen, 0, zoomedPboxHeight / 2, zoomedPboxWidth, zoomedPboxHeight /2);
+            e.Graphics.DrawEllipse(sightEllipsePen, new Rectangle(zoomedPboxWidth/2 - CENTER_ELLIPSE_SIGHT_RADIUS, zoomedPboxHeight/2 - CENTER_ELLIPSE_SIGHT_RADIUS, 2* CENTER_ELLIPSE_SIGHT_RADIUS, 2* CENTER_ELLIPSE_SIGHT_RADIUS));
         }
 
         private void Draw(PaintEventArgs e)
@@ -640,31 +634,29 @@ namespace PandaDigital
         /* Methods for getting real size points */
         private PointF PixelToReal(PointF pixelPoint)
         {
-            float x, y;
-            double x1, x2, y1, y2;
-            float x1Axis, x2Axis, y1Axis, y2Axis;
+            float x, y, x1, x2, y1, y2, x1Axis, x2Axis, y1Axis, y2Axis;
             PointF realPoint = new Point();
 
-            x1 = Convert.ToDouble(x1TextBox.Text);
-            x2 = Convert.ToDouble(x2TextBox.Text);
-            y1 = Convert.ToDouble(y1TextBox.Text);
-            y2 = Convert.ToDouble(y2TextBox.Text);
+            x1 = (float)Convert.ToDouble(x1TextBox.Text);
+            x2 = (float)Convert.ToDouble(x2TextBox.Text);
+            y1 = (float)Convert.ToDouble(y1TextBox.Text);
+            y2 = (float)Convert.ToDouble(y2TextBox.Text);
 
             x1Axis = GetAxisPointByColor(Color.Blue).X;
             x2Axis = GetAxisPointByColor(Color.Red).X;
             y1Axis = GetAxisPointByColor(Color.Yellow).Y;
             y2Axis = GetAxisPointByColor(Color.Green).Y;
 
-            if (linearRadioButtonX.Checked)
-                x = (float)x1 + ((float)x2 - (float)x1) * ((pixelPoint.X - x1Axis) / (x2Axis - x1Axis));
+            if (LinearScaleSelected())
+                x = x1 + (x2 - x1) * ((pixelPoint.X - x1Axis) / (x2Axis - x1Axis));
             else
             {
-                x = (float)Math.Log(x1) + ((float)Math.Log(x2) - (float)Math.Log(x1)) * ((pixelPoint.X - x1Axis) / (x2Axis - x1Axis));
+                x = (float)Math.Log(x1) + ((float)(Math.Log(x2) - Math.Log(x1))) * ((pixelPoint.X - x1Axis) / (x2Axis - x1Axis));
                 x = (float)Math.Pow(Math.E, Convert.ToDouble(x));
             }
 
             if (linearRadioButtonY.Checked)
-                y = (float)y1 + ((float)y2 - (float)y1) * ((pixelPoint.Y - y1Axis) / (y2Axis - y1Axis));
+                y = y1 + (y2 - y1) * ((pixelPoint.Y - y1Axis) / (y2Axis - y1Axis));
             else
             {
                 y = (float)Math.Log(y1) + ((float)Math.Log(y2) - (float)Math.Log(y1)) * ((pixelPoint.Y - y1Axis) / (y2Axis - y1Axis));
@@ -675,6 +667,11 @@ namespace PandaDigital
             realPoint.Y = y;
 
             return realPoint;
+        }
+
+        private bool LinearScaleSelected()
+        {
+            return linearRadioButtonX.Checked;
         }
 
         private PointF GetAxisPointByColor(Color color)
@@ -776,7 +773,7 @@ namespace PandaDigital
         
         private bool ColorsAreEqual(Color c1, Color c2)
         {
-            if(c1.Name.Equals(c2.Name))//if ((c1.A == c2.A) && (c1.R == c2.R) && (c1.G == c2.G) && (c1.B == c2.B))
+            if(c1.Name.Equals(c2.Name))
                 return true;
 
             return false;
@@ -784,11 +781,10 @@ namespace PandaDigital
 
         private void AutoGetPoints()
         {
-            int stepX = 5;
-            int stepY = 5;
+            int stepX = 2;
+            int stepY = 2;
             int rango = penSizeTrackBar.Value;
             Color pixelColor, curveColor;
-            Graphics g = CreateGraphics();
             Bitmap b = new Bitmap(imgBox.Image);
             float factorX = (float)imgBox.Width / b.Width;
             float factorY = (float)imgBox.Height / b.Height;
@@ -829,8 +825,6 @@ namespace PandaDigital
                     }
                 }
             }
-
-            
         }
 
       
@@ -866,11 +860,23 @@ namespace PandaDigital
                 
             }
         }
-        private void FindColors()
+
+        private void GetDominantColorsInImage()
+        {
+            GetAllColorsInImage();
+
+            if (imgColors.Count >= NUMBER_OF_DOMINANT_COLORS)
+                pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, NUMBER_OF_DOMINANT_COLORS);
+            else
+                pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, imgColors.Count);
+        }
+
+        private void GetAllColorsInImage()
         {
             Color pixelColor;
             Bitmap b = new Bitmap(imgBox.Image);
             LockBitmap lockBitmap = new LockBitmap(b);
+
             lockBitmap.LockBits();
 
             for (int i = 0; i < lockBitmap.Width; i++)
@@ -879,7 +885,7 @@ namespace PandaDigital
                 {
                     pixelColor = lockBitmap.GetPixel(i, j);
 
-                    if (!imgColors.Any(c => c.Color == pixelColor))
+                    if (!ImageColorsContainsColor(pixelColor))
                         imgColors.Add(new PandaColor(pixelColor));
                     else
                         imgColors.Where(c => c.Color == pixelColor).ToList()[0].Ocurrencies++;
@@ -887,12 +893,16 @@ namespace PandaDigital
             }
 
             lockBitmap.UnlockBits();
-
-            if (imgColors.Count >= 6)
-                pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, 6);
-            else
-                pandaColors = imgColors.OrderByDescending(o => o.Ocurrencies).ToList().GetRange(0, imgColors.Count);
+            
         }
+
+        public bool ImageColorsContainsColor(Color pixelColor)
+        {
+            if (imgColors.Any(c => c.Color == pixelColor))
+                return true;
+            return false;
+        }
+
         private void SelectNearestPoint(PointF p)
         {
             float x, y;

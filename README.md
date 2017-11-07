@@ -1,4 +1,4 @@
-# PandaDigital
+﻿# PandaDigital
 
 PandaDigital is a simple image digitizer tool that greatly reduces the time, effort and resources 
 needed to extract plot's data from scanned images.

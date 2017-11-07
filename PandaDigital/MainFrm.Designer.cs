@@ -78,8 +78,6 @@
             this.bgColorCmbBox = new System.Windows.Forms.ComboBox();
             this.getPointsBtn = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.ribbonButton1 = new System.Windows.Forms.RibbonButton();
-            this.ribbonButton2 = new System.Windows.Forms.RibbonButton();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomedImgBox)).BeginInit();
@@ -611,16 +609,7 @@
             this.getPointsBtn.Text = "Get points";
             this.getPointsBtn.UseVisualStyleBackColor = true;
             this.getPointsBtn.Click += new System.EventHandler(this.getPointsBtn_Click);
-            // 
-            // ribbonButton1
-            // 
-            this.ribbonButton1.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton1.Image")));
-            this.ribbonButton1.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton1.SmallImage")));
-            // 
-            // ribbonButton2
-            // 
-            this.ribbonButton2.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.Image")));
-            this.ribbonButton2.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.SmallImage")));
+
             // 
             // MainFrm
             // 
@@ -720,8 +709,6 @@
         private System.Windows.Forms.Button deleteAllBtn;
         private System.Windows.Forms.ComboBox bgColorCmbBox;
         private System.Windows.Forms.Button clearPenBtn;
-        private System.Windows.Forms.RibbonButton ribbonButton1;
-        private System.Windows.Forms.RibbonButton ribbonButton2;
         private System.Windows.Forms.PictureBox selectPenColorBox;
     }
 }

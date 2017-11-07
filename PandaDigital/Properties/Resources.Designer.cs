@@ -59,15 +59,5 @@ namespace PandaDigital.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap WilcoxResults {
-            get {
-                object obj = ResourceManager.GetObject("WilcoxResults", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }
