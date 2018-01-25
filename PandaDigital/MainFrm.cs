@@ -22,7 +22,8 @@ namespace PandaDigital
 
         Pen sightLinePen = new Pen(Color.Red, 1);
         Pen sightEllipsePen = new Pen(Color.Red, 5);
-        
+
+        private Sight sight;
         private int radiusDisplayed = 10;
         private List<PointF> userPoints = new List<PointF>();
         private List<PointF> autoPoints = new List<PointF>();
@@ -55,9 +56,7 @@ namespace PandaDigital
                 return cp;
             }
         }
-
-
-
+        
         /* Events */
         private void loadImageMainMenu_Click(object sender, EventArgs e)
         {
@@ -243,9 +242,19 @@ namespace PandaDigital
 
         private void zoomedImgBox_Paint(object sender, PaintEventArgs e)
         {
-            ShowZoomedImage(zoomedLocation);
+            DrawZoomedImage(zoomedLocation);
             DrawSight(e);
             DrawInZommedImage(e);    
+        }
+
+        private void DrawZoomedImage(Point zoomedLocation)
+        {
+            if (imgBox.Image != null)
+            {
+                Image zoomedImage = sight.GetZoomedImage(zoomedLocation);
+                zoomedImgBox.Image = zoomedImage;
+                zoomedImgBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            }
         }
 
         private void DrawInZommedImage(PaintEventArgs e)
@@ -327,6 +336,7 @@ namespace PandaDigital
                 imgBox.Image = null;
                 string[] filename = (string[])e.Data.GetData(DataFormats.FileDrop);
                 imgBox.Image = Image.FromFile(filename[0]);
+                sight = new Sight(Image.FromFile(filename[0]), radiusDisplayed, imgBox.Size);
                 GetDominantColorsInImage();
                 FillBgBox();
                 FillCurveBox();
@@ -712,31 +722,6 @@ namespace PandaDigital
         /* End of methods for getting real size points */
 
         /* Methods for handling zoomed image */
-        private void ShowZoomedImage(Point zoomedLocation)
-        {
-            Rectangle zoomedArea = new Rectangle(zoomedLocation.X - radiusDisplayed, zoomedLocation.Y - radiusDisplayed, 2 * radiusDisplayed, 2 * radiusDisplayed);
-            if (imgBox.Image != null)
-            {
-                Bitmap myBitmap = new Bitmap(imgBox.Image, new Size(imgBox.Size.Width, imgBox.Size.Height));
-                Bitmap CroppedImage = CropImage(myBitmap, zoomedArea);
-
-                zoomedImgBox.Image = CroppedImage;
-                zoomedImgBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                
-            }
-        }
-
-        private Bitmap CropImage(Bitmap source, Rectangle section)
-        {
-            Bitmap bmp = new Bitmap(section.Width, section.Height);
-            Graphics g = Graphics.FromImage(bmp);
-
-            g.DrawImage(source, 0, 0, section, GraphicsUnit.Pixel);
-            g.Dispose();
-
-            return bmp;
-        }
-
         private void DrawModeLine(PaintEventArgs e)
         {
             float x1, y1, x2, y2, dmPboxWidth, dmPboxHeight, margin;
@@ -768,8 +753,6 @@ namespace PandaDigital
         {
             bgColorCmbBox.Items.Clear();
         }
-        
-        
         
         private bool ColorsAreEqual(Color c1, Color c2)
         {
@@ -826,8 +809,7 @@ namespace PandaDigital
                 }
             }
         }
-
-      
+        
         private void FillCurveBox()
         {
             ClearCurvesComboBox();
@@ -957,7 +939,6 @@ namespace PandaDigital
             }
         }
         
-
         /* End of methods for handling zoomed image */
     }
 }
