@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileMainMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.loadImageMainMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -223,6 +222,7 @@
             this.deletePrevBtn.TabIndex = 5;
             this.deletePrevBtn.Text = "Delete last";
             this.deletePrevBtn.UseVisualStyleBackColor = true;
+            this.deletePrevBtn.Click += new System.EventHandler(this.deletePrevBtn_Click);
             // 
             // groupBox9
             // 
@@ -609,7 +609,6 @@
             this.getPointsBtn.Text = "Get points";
             this.getPointsBtn.UseVisualStyleBackColor = true;
             this.getPointsBtn.Click += new System.EventHandler(this.getPointsBtn_Click);
-
             // 
             // MainFrm
             // 

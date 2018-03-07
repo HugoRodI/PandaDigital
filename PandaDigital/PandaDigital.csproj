@@ -50,9 +50,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AxisPoint.cs" />
+    <Compile Include="Axe.cs" />
+    <Compile Include="Circle.cs" />
+    <Compile Include="ColorRecognizer.cs" />
+    <Compile Include="Cross.cs" />
     <Compile Include="Curve.cs" />
+    <Compile Include="LinearScaler.cs" />
     <Compile Include="LockBitmap.cs" />
+    <Compile Include="LogarithmicScaler.cs" />
     <Compile Include="MainFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,8 +65,15 @@
       <DependentUpon>MainFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="PandaColor.cs" />
+    <Compile Include="PointExporter.cs" />
+    <Compile Include="PointFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scaler.cs" />
+    <Compile Include="Shape.cs" />
+    <Compile Include="Square.cs" />
+    <Compile Include="Triangle.cs" />
+    <Compile Include="UserPoints.cs" />
     <Compile Include="Sight.cs" />
     <EmbeddedResource Include="MainFrm.resx">
       <DependentUpon>MainFrm.cs</DependentUpon>
