@@ -14,7 +14,6 @@ namespace PandaDigital
         Dictionary<Color, int> ocurrenciesOfColorsInImage = new Dictionary<Color, int>();
         public List<Color> dominantColorsInImage;
         private int numberOfDominantColors = 6;
-        private int pixelStep = 4;
 
         public ColorRecognizer(Image imageToRecognize)
         {
@@ -47,9 +46,9 @@ namespace PandaDigital
 
             lockBitmap.LockBits();
 
-            for (int i = 0; i < lockBitmap.Width; i += pixelStep)
+            for (int i = 0; i < lockBitmap.Width; i++)
             {
-                for (int j = 0; j < lockBitmap.Height; j += pixelStep)
+                for (int j = 0; j < lockBitmap.Height; j++)
                 {
                     pixelColor = lockBitmap.GetPixel(i, j);
 
@@ -68,9 +67,9 @@ namespace PandaDigital
         private void GetDominantColorsInImage()
         {
             if (colorsInImage.Count >= numberOfDominantColors)
-                dominantColorsInImage = ocurrenciesOfColorsInImage.OrderBy(dict => dict.Value).Take(numberOfDominantColors).ToDictionary(k => k.Key, v => v.Value).Keys.ToList();
+                dominantColorsInImage = ocurrenciesOfColorsInImage.OrderByDescending(dict => dict.Value).Take(numberOfDominantColors).ToDictionary(k => k.Key, v => v.Value).Keys.ToList();
             else
-                dominantColorsInImage = ocurrenciesOfColorsInImage.OrderBy(dict => dict.Value).ToDictionary(k => k.Key, v => v.Value).Keys.ToList();            
+                dominantColorsInImage = ocurrenciesOfColorsInImage.OrderByDescending(dict => dict.Value).ToDictionary(k => k.Key, v => v.Value).Keys.ToList();            
         }
         
     }
