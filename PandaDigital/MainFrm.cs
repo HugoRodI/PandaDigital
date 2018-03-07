@@ -19,15 +19,12 @@ namespace PandaDigital
     {
         private ColorRecognizer colorRecognizer;
         private Sight sight;
-        private PointFinder pointFinder;
         private List<Axe> axis = new List<Axe>();
         private int radiusDisplayed = 10;
         private UserPoints userPoints = new UserPoints(new Square(2, Color.Red, 4), new Square(4, Color.Red, 20));
         private UserPoints selectedPoints = new UserPoints(new Square(2, Color.Blue, 4), new Square(4, Color.Blue, 20));
         private UserPoints axisPoints = new UserPoints(new Cross(4, Color.Turquoise, 16, 16), new Cross(6, Color.Turquoise, 100, 100));
         private Point[] axisPointsArray = new Point[4];
-                
-                
         private List<Point> currentLine = new List<Point>();
         private List<List<Point>> curves = new List<List<Point>>();
         public List<Color> dominantColorsInImage = new List<Color>();
@@ -41,6 +38,8 @@ namespace PandaDigital
             InitializeComponent();
             ResizeRedraw = true;
             DoubleBuffered = true;
+            horizontalStepBox.Text = "2";
+            verticalStepBox.Text = "2";
         }
 
         protected override CreateParams CreateParams
@@ -96,6 +95,10 @@ namespace PandaDigital
             if (fileDialog.ShowDialog() == DialogResult.OK)
                 imgBox.Image = new Bitmap(fileDialog.FileName);
 
+            sight = new Sight(imgBox.Image, radiusDisplayed, imgBox.Size, zoomedImgBox.Size);
+            userPoints.SetSight(sight);
+            selectedPoints.SetSight(sight);
+            axisPoints.SetSight(sight);
             ProcessImageColors();
         }
 
@@ -112,7 +115,7 @@ namespace PandaDigital
                 imgBox.Image = null;
                 string[] filename = (string[])e.Data.GetData(DataFormats.FileDrop);
                 imgBox.Image = Image.FromFile(filename[0]);
-                sight = new Sight(Image.FromFile(filename[0]), radiusDisplayed, imgBox.Size, zoomedImgBox.Size);
+                sight = new Sight(imgBox.Image, radiusDisplayed, imgBox.Size, zoomedImgBox.Size);
                 userPoints.SetSight(sight);
                 selectedPoints.SetSight(sight);
                 axisPoints.SetSight(sight);
@@ -509,7 +512,6 @@ namespace PandaDigital
         {
             colorRecognizer = new ColorRecognizer(imgBox.Image);
             colorRecognizer.RecognizeColors();
-            FillBgBox();
             FillCurveBox();
         }
 
@@ -525,23 +527,13 @@ namespace PandaDigital
         {
             curvesColorCmbBox.Items.Clear();
         }
-
-        private void FillBgBox()
-        {
-            ClearBgComboBox();
-
-            foreach (Color dominantColor in colorRecognizer.getDominantColorsInImage())
-                bgColorCmbBox.Items.Add(dominantColor.Name);
-        }
-
-        private void ClearBgComboBox()
-        {
-            bgColorCmbBox.Items.Clear();
-        }
         
         private void AutoGetPoints()
         {
             List<Point> pointsAutomaticallyFound = new List<Point>();
+            PointFinder pointFinder = new PointFinder(imgBox.Image, imgBox.Size, curvesColorCmbBox.SelectedItem, curves, penSizeTrackBar.Value, 
+                                                      Convert.ToInt32(horizontalStepBox.Text), Convert.ToInt32(verticalStepBox.Text));
+
             pointsAutomaticallyFound = pointFinder.autoGetPoints();
 
             userPoints.AddRange(pointsAutomaticallyFound);
@@ -567,6 +559,7 @@ namespace PandaDigital
         {
             userPoints.FindNearestPoint(selectedPoints, point);
         }
+        
         /* End of methods for events related with image */
     }
 }

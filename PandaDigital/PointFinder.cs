@@ -9,58 +9,97 @@ namespace PandaDigital
 {
     public class PointFinder
     {
+        int range, horizontalStep, verticalStep;
+        float factorX, factorY;
+        Image userImage;
+        Size userImageSize;
+        Object selectedCurveColor;
+        Bitmap b;
+        Color pixelColor, curveColor;
+        List<List<Point>> curves;
+
+        public PointFinder(Image userImage, Size userImageSize, Object selectedCurveColor, List<List<Point>> curves, int range, int horizontalStep, int verticalStep)
+        {
+            this.userImage = userImage;
+            this.userImageSize = userImageSize;
+            this.selectedCurveColor = selectedCurveColor;
+            this.curves = curves;
+            this.range = range / 10;
+            this.horizontalStep = horizontalStep;
+            this.verticalStep = verticalStep;
+            
+            b = new Bitmap(userImage);
+            curveColor = Color.FromName(selectedCurveColor.ToString());
+            factorX = (float)userImageSize.Width / b.Width;
+            factorY = (float)userImageSize.Height / b.Height;
+        }
 
         public List<Point> autoGetPoints()
         {
-            //int stepX = 2;
-            //int stepY = 2;
-            //int rango = penSizeTrackBar.Value;
-            List<Point> userPoints = new List<Point>();
-            //Color pixelColor, curveColor;
-            //Bitmap b = new Bitmap(imgBox.Image);
-            //float factorX = (float)imgBox.Width / b.Width;
-            //float factorY = (float)imgBox.Height / b.Height;
-            //curveColor = Color.FromName((curvesColorCmbBox.SelectedItem).ToString());
+            List<Point> userPoints;
 
-            //if (curves.Count > 0 && curves[0].Count > 0)
-            //{
-            //    foreach (List<Point> curve in curves)
-            //    {
-            //        foreach (Point p in curve)
-            //        {
-            //            for (int i = p.X - rango; i < p.X + rango; i += stepX)
-            //            {
-            //                for (int j = p.Y - rango; j < p.Y + rango; j += stepY)
-            //                {
-            //                    pixelColor = b.GetPixel(i * b.Width / imgBox.Width, j * b.Height / imgBox.Height);
-            //                    Point p = new Point(i, j);
-
-            //                    if (ColorsAreEqual(pixelColor, curveColor))
-            //                        userPoints.Add(p);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < b.Width; i += stepX)
-            //    {
-            //        for (int j = 0; j < b.Height; j += stepY)
-            //        {
-            //            pixelColor = b.GetPixel(i, j);
-            //            Point p = new Point(i * factorX, j * factorY);
-
-            //            if (ColorsAreEqual(pixelColor, curveColor))
-            //                userPoints.Add(p);
-
-            //        }
-            //    }
-            //}
+            if (SearchRegionExists())
+                userPoints = GetSearchRegionPoints();
+            else
+                userPoints = GetPointsByColor();
 
             return userPoints;
         }
 
+        private bool SearchRegionExists()
+        {
+            if (curves.Count > 0 && curves[0].Count > 0)
+                return true;
+
+            return false;
+        }
+
+        private List<Point> GetPointsByColor()
+        {
+            Point p;
+            List<Point> userPoints = new List<Point>();
+
+            for (int i = 0; i < b.Width; i += horizontalStep)
+            {
+                for (int j = 0; j < b.Height; j += verticalStep)
+                {
+                    pixelColor = b.GetPixel(i, j);
+                    p = new Point((int)(i * factorX), (int)(j * factorY));
+
+                    if (ColorsAreEqual(pixelColor, curveColor))
+                        userPoints.Add(p);
+                }
+            }
+
+            return userPoints;
+        }
+
+        private List<Point> GetSearchRegionPoints()
+        {
+            Point newPoint;
+            List<Point> userPoints = new List<Point>();
+
+            foreach (List<Point> curve in curves)
+            {
+                foreach (Point p in curve)
+                {
+                    for (int i = p.X - range; i < p.X + range; i += horizontalStep)
+                    {
+                        for (int j = p.Y - range; j < p.Y + range; j += verticalStep)
+                        {
+                            pixelColor = b.GetPixel(i * b.Width / userImageSize.Width, j * b.Height / userImageSize.Height);
+                            newPoint = new Point(i, j);
+
+                            if (ColorsAreEqual(pixelColor, curveColor))
+                                userPoints.Add(newPoint);
+                        }
+                    }
+                }
+            }
+
+            return userPoints;
+        }
+        
         private bool ColorsAreEqual(Color c1, Color c2)
         {
             if (c1.Name.Equals(c2.Name))

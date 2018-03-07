@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileMainMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.loadImageMainMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,10 +74,13 @@
             this.drawModePictureBox = new System.Windows.Forms.PictureBox();
             this.drawModeCheckBox = new System.Windows.Forms.CheckBox();
             this.penSizeTrackBar = new System.Windows.Forms.TrackBar();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.bgColorCmbBox = new System.Windows.Forms.ComboBox();
             this.getPointsBtn = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.horizontalStepBox = new System.Windows.Forms.TextBox();
+            this.verticalStepBox = new System.Windows.Forms.TextBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomedImgBox)).BeginInit();
@@ -97,7 +101,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).BeginInit();
-            this.groupBox11.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -122,7 +126,7 @@
             // loadImageMainMenu
             // 
             this.loadImageMainMenu.Name = "loadImageMainMenu";
-            this.loadImageMainMenu.Size = new System.Drawing.Size(136, 22);
+            this.loadImageMainMenu.Size = new System.Drawing.Size(152, 22);
             this.loadImageMainMenu.Text = "Load Image";
             this.loadImageMainMenu.Click += new System.EventHandler(this.loadImageMainMenu_Click);
             // 
@@ -138,7 +142,7 @@
             this.imgBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.imgBox.Location = new System.Drawing.Point(6, 17);
             this.imgBox.Name = "imgBox";
-            this.imgBox.Size = new System.Drawing.Size(844, 660);
+            this.imgBox.Size = new System.Drawing.Size(844, 610);
             this.imgBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.imgBox.TabIndex = 1;
             this.imgBox.TabStop = false;
@@ -165,7 +169,7 @@
             this.groupBox1.Controls.Add(this.imgBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 37);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(856, 683);
+            this.groupBox1.Size = new System.Drawing.Size(856, 636);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Image:";
@@ -182,7 +186,7 @@
             this.tabControl1.Location = new System.Drawing.Point(870, 397);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(344, 323);
+            this.tabControl1.Size = new System.Drawing.Size(344, 276);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 2;
             // 
@@ -197,7 +201,7 @@
             this.manualTabPage.Location = new System.Drawing.Point(4, 29);
             this.manualTabPage.Name = "manualTabPage";
             this.manualTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.manualTabPage.Size = new System.Drawing.Size(336, 290);
+            this.manualTabPage.Size = new System.Drawing.Size(336, 243);
             this.manualTabPage.TabIndex = 2;
             this.manualTabPage.Text = "Manual mode";
             this.manualTabPage.UseVisualStyleBackColor = true;
@@ -206,9 +210,9 @@
             // 
             this.groupBox10.Controls.Add(this.deletePrevBtn);
             this.groupBox10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox10.Location = new System.Drawing.Point(14, 8);
+            this.groupBox10.Location = new System.Drawing.Point(14, 4);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(86, 63);
+            this.groupBox10.Size = new System.Drawing.Size(86, 53);
             this.groupBox10.TabIndex = 17;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Ctrl+D";
@@ -218,7 +222,7 @@
             this.deletePrevBtn.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.deletePrevBtn.Location = new System.Drawing.Point(6, 18);
             this.deletePrevBtn.Name = "deletePrevBtn";
-            this.deletePrevBtn.Size = new System.Drawing.Size(75, 38);
+            this.deletePrevBtn.Size = new System.Drawing.Size(75, 29);
             this.deletePrevBtn.TabIndex = 5;
             this.deletePrevBtn.Text = "Delete last";
             this.deletePrevBtn.UseVisualStyleBackColor = true;
@@ -228,9 +232,9 @@
             // 
             this.groupBox9.Controls.Add(this.deleteAllBtn);
             this.groupBox9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox9.Location = new System.Drawing.Point(125, 8);
+            this.groupBox9.Location = new System.Drawing.Point(125, 4);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(86, 63);
+            this.groupBox9.Size = new System.Drawing.Size(86, 53);
             this.groupBox9.TabIndex = 2;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Ctrl+A";
@@ -240,7 +244,7 @@
             this.deleteAllBtn.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.deleteAllBtn.Location = new System.Drawing.Point(5, 18);
             this.deleteAllBtn.Name = "deleteAllBtn";
-            this.deleteAllBtn.Size = new System.Drawing.Size(75, 38);
+            this.deleteAllBtn.Size = new System.Drawing.Size(75, 29);
             this.deleteAllBtn.TabIndex = 7;
             this.deleteAllBtn.Text = "Delete all";
             this.deleteAllBtn.UseVisualStyleBackColor = true;
@@ -256,9 +260,9 @@
             this.groupBox3.Controls.Add(this.x1RadioButton);
             this.groupBox3.Controls.Add(this.x2TextBox);
             this.groupBox3.Controls.Add(this.x1TextBox);
-            this.groupBox3.Location = new System.Drawing.Point(9, 182);
+            this.groupBox3.Location = new System.Drawing.Point(9, 157);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(311, 98);
+            this.groupBox3.Size = new System.Drawing.Size(311, 76);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Axis coordinates";
@@ -266,7 +270,7 @@
             // y2RadioButton
             // 
             this.y2RadioButton.AutoSize = true;
-            this.y2RadioButton.Location = new System.Drawing.Point(164, 63);
+            this.y2RadioButton.Location = new System.Drawing.Point(164, 49);
             this.y2RadioButton.Name = "y2RadioButton";
             this.y2RadioButton.Size = new System.Drawing.Size(55, 17);
             this.y2RadioButton.TabIndex = 11;
@@ -277,7 +281,7 @@
             // y1RadioButton
             // 
             this.y1RadioButton.AutoSize = true;
-            this.y1RadioButton.Location = new System.Drawing.Point(164, 27);
+            this.y1RadioButton.Location = new System.Drawing.Point(164, 21);
             this.y1RadioButton.Name = "y1RadioButton";
             this.y1RadioButton.Size = new System.Drawing.Size(55, 17);
             this.y1RadioButton.TabIndex = 10;
@@ -288,7 +292,7 @@
             // y2TextBox
             // 
             this.y2TextBox.Enabled = false;
-            this.y2TextBox.Location = new System.Drawing.Point(225, 63);
+            this.y2TextBox.Location = new System.Drawing.Point(225, 48);
             this.y2TextBox.Name = "y2TextBox";
             this.y2TextBox.Size = new System.Drawing.Size(78, 20);
             this.y2TextBox.TabIndex = 9;
@@ -296,7 +300,7 @@
             // y1TextBox
             // 
             this.y1TextBox.Enabled = false;
-            this.y1TextBox.Location = new System.Drawing.Point(225, 26);
+            this.y1TextBox.Location = new System.Drawing.Point(225, 20);
             this.y1TextBox.Name = "y1TextBox";
             this.y1TextBox.Size = new System.Drawing.Size(78, 20);
             this.y1TextBox.TabIndex = 8;
@@ -304,7 +308,7 @@
             // x2RadioButton
             // 
             this.x2RadioButton.AutoSize = true;
-            this.x2RadioButton.Location = new System.Drawing.Point(7, 64);
+            this.x2RadioButton.Location = new System.Drawing.Point(7, 49);
             this.x2RadioButton.Name = "x2RadioButton";
             this.x2RadioButton.Size = new System.Drawing.Size(55, 17);
             this.x2RadioButton.TabIndex = 7;
@@ -316,7 +320,7 @@
             // 
             this.x1RadioButton.AutoSize = true;
             this.x1RadioButton.Checked = true;
-            this.x1RadioButton.Location = new System.Drawing.Point(6, 26);
+            this.x1RadioButton.Location = new System.Drawing.Point(6, 21);
             this.x1RadioButton.Name = "x1RadioButton";
             this.x1RadioButton.Size = new System.Drawing.Size(55, 17);
             this.x1RadioButton.TabIndex = 6;
@@ -328,14 +332,14 @@
             // x2TextBox
             // 
             this.x2TextBox.Enabled = false;
-            this.x2TextBox.Location = new System.Drawing.Point(68, 63);
+            this.x2TextBox.Location = new System.Drawing.Point(68, 48);
             this.x2TextBox.Name = "x2TextBox";
             this.x2TextBox.Size = new System.Drawing.Size(78, 20);
             this.x2TextBox.TabIndex = 5;
             // 
             // x1TextBox
             // 
-            this.x1TextBox.Location = new System.Drawing.Point(68, 26);
+            this.x1TextBox.Location = new System.Drawing.Point(68, 20);
             this.x1TextBox.Name = "x1TextBox";
             this.x1TextBox.Size = new System.Drawing.Size(78, 20);
             this.x1TextBox.TabIndex = 4;
@@ -344,9 +348,9 @@
             // 
             this.groupBox8.Controls.Add(this.exportBtn);
             this.groupBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox8.Location = new System.Drawing.Point(234, 8);
+            this.groupBox8.Location = new System.Drawing.Point(234, 4);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(86, 63);
+            this.groupBox8.Size = new System.Drawing.Size(86, 53);
             this.groupBox8.TabIndex = 16;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Ctrl+S";
@@ -356,7 +360,7 @@
             this.exportBtn.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.exportBtn.Location = new System.Drawing.Point(4, 18);
             this.exportBtn.Name = "exportBtn";
-            this.exportBtn.Size = new System.Drawing.Size(75, 38);
+            this.exportBtn.Size = new System.Drawing.Size(75, 29);
             this.exportBtn.TabIndex = 6;
             this.exportBtn.Text = "Export";
             this.exportBtn.UseVisualStyleBackColor = true;
@@ -366,7 +370,7 @@
             // 
             this.groupBox6.Controls.Add(this.axisRadioBtn);
             this.groupBox6.Controls.Add(this.userRadioBtn);
-            this.groupBox6.Location = new System.Drawing.Point(14, 98);
+            this.groupBox6.Location = new System.Drawing.Point(14, 62);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(96, 76);
             this.groupBox6.TabIndex = 11;
@@ -401,9 +405,9 @@
             // 
             this.groupBox4.Controls.Add(this.groupBox7);
             this.groupBox4.Controls.Add(this.groupBox5);
-            this.groupBox4.Location = new System.Drawing.Point(116, 78);
+            this.groupBox4.Location = new System.Drawing.Point(116, 62);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(204, 102);
+            this.groupBox4.Size = new System.Drawing.Size(204, 91);
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Axis Scale";
@@ -414,7 +418,7 @@
             this.groupBox7.Controls.Add(this.linearRadioButtonY);
             this.groupBox7.Location = new System.Drawing.Point(102, 20);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(95, 76);
+            this.groupBox7.Size = new System.Drawing.Size(95, 65);
             this.groupBox7.TabIndex = 1;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Y";
@@ -422,7 +426,7 @@
             // logRadioButtonY
             // 
             this.logRadioButtonY.AutoSize = true;
-            this.logRadioButtonY.Location = new System.Drawing.Point(8, 48);
+            this.logRadioButtonY.Location = new System.Drawing.Point(8, 42);
             this.logRadioButtonY.Name = "logRadioButtonY";
             this.logRadioButtonY.Size = new System.Drawing.Size(79, 17);
             this.logRadioButtonY.TabIndex = 2;
@@ -433,7 +437,7 @@
             // 
             this.linearRadioButtonY.AutoSize = true;
             this.linearRadioButtonY.Checked = true;
-            this.linearRadioButtonY.Location = new System.Drawing.Point(8, 23);
+            this.linearRadioButtonY.Location = new System.Drawing.Point(8, 19);
             this.linearRadioButtonY.Name = "linearRadioButtonY";
             this.linearRadioButtonY.Size = new System.Drawing.Size(54, 17);
             this.linearRadioButtonY.TabIndex = 1;
@@ -447,7 +451,7 @@
             this.groupBox5.Controls.Add(this.linearRadioButtonX);
             this.groupBox5.Location = new System.Drawing.Point(6, 20);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(89, 76);
+            this.groupBox5.Size = new System.Drawing.Size(89, 65);
             this.groupBox5.TabIndex = 0;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "X";
@@ -455,7 +459,7 @@
             // logRadioButtonX
             // 
             this.logRadioButtonX.AutoSize = true;
-            this.logRadioButtonX.Location = new System.Drawing.Point(6, 48);
+            this.logRadioButtonX.Location = new System.Drawing.Point(6, 43);
             this.logRadioButtonX.Name = "logRadioButtonX";
             this.logRadioButtonX.Size = new System.Drawing.Size(79, 17);
             this.logRadioButtonX.TabIndex = 1;
@@ -466,7 +470,7 @@
             // 
             this.linearRadioButtonX.AutoSize = true;
             this.linearRadioButtonX.Checked = true;
-            this.linearRadioButtonX.Location = new System.Drawing.Point(6, 23);
+            this.linearRadioButtonX.Location = new System.Drawing.Point(6, 20);
             this.linearRadioButtonX.Name = "linearRadioButtonX";
             this.linearRadioButtonX.Size = new System.Drawing.Size(54, 17);
             this.linearRadioButtonX.TabIndex = 0;
@@ -476,14 +480,14 @@
             // 
             // autoTabPage
             // 
+            this.autoTabPage.Controls.Add(this.groupBox2);
             this.autoTabPage.Controls.Add(this.groupBox13);
             this.autoTabPage.Controls.Add(this.groupBox12);
-            this.autoTabPage.Controls.Add(this.groupBox11);
             this.autoTabPage.Controls.Add(this.getPointsBtn);
             this.autoTabPage.Location = new System.Drawing.Point(4, 29);
             this.autoTabPage.Name = "autoTabPage";
             this.autoTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.autoTabPage.Size = new System.Drawing.Size(336, 290);
+            this.autoTabPage.Size = new System.Drawing.Size(336, 243);
             this.autoTabPage.TabIndex = 3;
             this.autoTabPage.Text = "Automatic mode";
             this.autoTabPage.UseVisualStyleBackColor = true;
@@ -491,9 +495,9 @@
             // groupBox13
             // 
             this.groupBox13.Controls.Add(this.curvesColorCmbBox);
-            this.groupBox13.Location = new System.Drawing.Point(25, 54);
+            this.groupBox13.Location = new System.Drawing.Point(6, 6);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(279, 53);
+            this.groupBox13.Size = new System.Drawing.Size(140, 45);
             this.groupBox13.TabIndex = 6;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Curve color";
@@ -503,7 +507,7 @@
             this.curvesColorCmbBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.curvesColorCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.curvesColorCmbBox.FormattingEnabled = true;
-            this.curvesColorCmbBox.Location = new System.Drawing.Point(149, 20);
+            this.curvesColorCmbBox.Location = new System.Drawing.Point(11, 17);
             this.curvesColorCmbBox.Name = "curvesColorCmbBox";
             this.curvesColorCmbBox.Size = new System.Drawing.Size(121, 21);
             this.curvesColorCmbBox.TabIndex = 6;
@@ -516,9 +520,9 @@
             this.groupBox12.Controls.Add(this.drawModePictureBox);
             this.groupBox12.Controls.Add(this.drawModeCheckBox);
             this.groupBox12.Controls.Add(this.penSizeTrackBar);
-            this.groupBox12.Location = new System.Drawing.Point(25, 111);
+            this.groupBox12.Location = new System.Drawing.Point(6, 79);
             this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(305, 139);
+            this.groupBox12.Size = new System.Drawing.Size(324, 129);
             this.groupBox12.TabIndex = 5;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Pen size";
@@ -527,7 +531,7 @@
             // 
             this.selectPenColorBox.BackColor = System.Drawing.Color.Turquoise;
             this.selectPenColorBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.selectPenColorBox.Location = new System.Drawing.Point(113, 21);
+            this.selectPenColorBox.Location = new System.Drawing.Point(113, 19);
             this.selectPenColorBox.Name = "selectPenColorBox";
             this.selectPenColorBox.Size = new System.Drawing.Size(42, 25);
             this.selectPenColorBox.TabIndex = 4;
@@ -536,7 +540,7 @@
             // 
             // clearPenBtn
             // 
-            this.clearPenBtn.Location = new System.Drawing.Point(55, 110);
+            this.clearPenBtn.Location = new System.Drawing.Point(55, 100);
             this.clearPenBtn.Name = "clearPenBtn";
             this.clearPenBtn.Size = new System.Drawing.Size(75, 23);
             this.clearPenBtn.TabIndex = 3;
@@ -548,9 +552,9 @@
             // 
             this.drawModePictureBox.BackColor = System.Drawing.Color.White;
             this.drawModePictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.drawModePictureBox.Location = new System.Drawing.Point(171, 21);
+            this.drawModePictureBox.Location = new System.Drawing.Point(173, 21);
             this.drawModePictureBox.Name = "drawModePictureBox";
-            this.drawModePictureBox.Size = new System.Drawing.Size(128, 112);
+            this.drawModePictureBox.Size = new System.Drawing.Size(144, 102);
             this.drawModePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.drawModePictureBox.TabIndex = 2;
             this.drawModePictureBox.TabStop = false;
@@ -559,7 +563,7 @@
             // drawModeCheckBox
             // 
             this.drawModeCheckBox.AutoSize = true;
-            this.drawModeCheckBox.Location = new System.Drawing.Point(6, 27);
+            this.drawModeCheckBox.Location = new System.Drawing.Point(11, 23);
             this.drawModeCheckBox.Name = "drawModeCheckBox";
             this.drawModeCheckBox.Size = new System.Drawing.Size(80, 17);
             this.drawModeCheckBox.TabIndex = 1;
@@ -568,7 +572,7 @@
             // 
             // penSizeTrackBar
             // 
-            this.penSizeTrackBar.Location = new System.Drawing.Point(6, 58);
+            this.penSizeTrackBar.Location = new System.Drawing.Point(6, 50);
             this.penSizeTrackBar.Maximum = 60;
             this.penSizeTrackBar.Minimum = 15;
             this.penSizeTrackBar.Name = "penSizeTrackBar";
@@ -579,30 +583,9 @@
             this.penSizeTrackBar.Value = 35;
             this.penSizeTrackBar.ValueChanged += new System.EventHandler(this.penSizeTrackBar_ValueChanged);
             // 
-            // groupBox11
-            // 
-            this.groupBox11.Controls.Add(this.bgColorCmbBox);
-            this.groupBox11.Location = new System.Drawing.Point(25, 8);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(279, 46);
-            this.groupBox11.TabIndex = 2;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Background color";
-            // 
-            // bgColorCmbBox
-            // 
-            this.bgColorCmbBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.bgColorCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.bgColorCmbBox.FormattingEnabled = true;
-            this.bgColorCmbBox.Location = new System.Drawing.Point(149, 19);
-            this.bgColorCmbBox.Name = "bgColorCmbBox";
-            this.bgColorCmbBox.Size = new System.Drawing.Size(121, 21);
-            this.bgColorCmbBox.TabIndex = 7;
-            this.bgColorCmbBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.bgColorCmbBox_DrawItem);
-            // 
             // getPointsBtn
             // 
-            this.getPointsBtn.Location = new System.Drawing.Point(128, 261);
+            this.getPointsBtn.Location = new System.Drawing.Point(153, 214);
             this.getPointsBtn.Name = "getPointsBtn";
             this.getPointsBtn.Size = new System.Drawing.Size(75, 23);
             this.getPointsBtn.TabIndex = 0;
@@ -610,15 +593,61 @@
             this.getPointsBtn.UseVisualStyleBackColor = true;
             this.getPointsBtn.Click += new System.EventHandler(this.getPointsBtn_Click);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.verticalStepBox);
+            this.groupBox2.Controls.Add(this.horizontalStepBox);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Location = new System.Drawing.Point(153, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(177, 77);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Automatic search step size";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(57, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Horizontal:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(11, 51);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Vertical:";
+            // 
+            // horizontalStepBox
+            // 
+            this.horizontalStepBox.Location = new System.Drawing.Point(81, 20);
+            this.horizontalStepBox.Name = "horizontalStepBox";
+            this.horizontalStepBox.Size = new System.Drawing.Size(86, 20);
+            this.horizontalStepBox.TabIndex = 2;
+            // 
+            // verticalStepBox
+            // 
+            this.verticalStepBox.Location = new System.Drawing.Point(81, 48);
+            this.verticalStepBox.Name = "verticalStepBox";
+            this.verticalStepBox.Size = new System.Drawing.Size(86, 20);
+            this.verticalStepBox.TabIndex = 3;
+            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1226, 722);
+            this.ClientSize = new System.Drawing.Size(1226, 680);
             this.Controls.Add(this.zoomedImgBox);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.mainMenu);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mainMenu;
             this.Name = "MainFrm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -652,7 +681,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).EndInit();
-            this.groupBox11.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -698,7 +728,6 @@
         private System.Windows.Forms.TabPage autoTabPage;
         private System.Windows.Forms.Button getPointsBtn;
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.GroupBox groupBox13;
         private System.Windows.Forms.ComboBox curvesColorCmbBox;
         private System.Windows.Forms.GroupBox groupBox12;
@@ -706,9 +735,13 @@
         private System.Windows.Forms.PictureBox drawModePictureBox;
         private System.Windows.Forms.CheckBox drawModeCheckBox;
         private System.Windows.Forms.Button deleteAllBtn;
-        private System.Windows.Forms.ComboBox bgColorCmbBox;
         private System.Windows.Forms.Button clearPenBtn;
         private System.Windows.Forms.PictureBox selectPenColorBox;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox verticalStepBox;
+        private System.Windows.Forms.TextBox horizontalStepBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
     }
 }
 
