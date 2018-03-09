@@ -31,7 +31,7 @@ PandaDigital is an open source project. If you feel that PandaDigital or the com
 will benefit from your changes, please open a pull request.
 
 ## Authors
-Hugo Rodríguez Ignacio hugo.rodriguezignacio@gmail.com
+Hugo Rodríguez Ignacio (HugoRod) hugo.rodriguezignacio@gmail.com
 
 ## License
 Code released under the MIT License.
