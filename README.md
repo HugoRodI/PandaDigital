@@ -3,8 +3,7 @@
 PandaDigital is a simple image digitizer tool that greatly reduces the time, effort and resources 
 needed to extract plot's data from scanned images.
 
-### Have you ever wanted to extract the points from a digitized graph like the one shown below,
-to work with them or to create your own custom graph?
+### Have you ever wanted to extract the points from a digitized graph like the one shown below, to work with them or to create your own custom graph?
 
 ![alt text](PandaDigital/Images/image-to-digitize.png "Image to digitize with PandaDigital")
 
@@ -22,7 +21,7 @@ to work with them or to create your own custom graph?
 - User-friendly shortcuts to ease the extraction of data.
 
 ## Installation
-You do not need to build PandaDigital. An executable file is in the bin folder
+You do not need to build PandaDigital. An executable file is in the bin folder.
 
 ## Documentation
 PandaDigital's documentation is included in this repo in the docs directory.

@@ -66,6 +66,11 @@
             this.logRadioButtonX = new System.Windows.Forms.RadioButton();
             this.linearRadioButtonX = new System.Windows.Forms.RadioButton();
             this.autoTabPage = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.verticalStepBox = new System.Windows.Forms.TextBox();
+            this.horizontalStepBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.curvesColorCmbBox = new System.Windows.Forms.ComboBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
@@ -76,11 +81,6 @@
             this.penSizeTrackBar = new System.Windows.Forms.TrackBar();
             this.getPointsBtn = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.horizontalStepBox = new System.Windows.Forms.TextBox();
-            this.verticalStepBox = new System.Windows.Forms.TextBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoomedImgBox)).BeginInit();
@@ -96,12 +96,12 @@
             this.groupBox7.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.autoTabPage.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).BeginInit();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -126,7 +126,7 @@
             // loadImageMainMenu
             // 
             this.loadImageMainMenu.Name = "loadImageMainMenu";
-            this.loadImageMainMenu.Size = new System.Drawing.Size(152, 22);
+            this.loadImageMainMenu.Size = new System.Drawing.Size(136, 22);
             this.loadImageMainMenu.Text = "Load Image";
             this.loadImageMainMenu.Click += new System.EventHandler(this.loadImageMainMenu_Click);
             // 
@@ -135,6 +135,7 @@
             this.helpMainMenu.Name = "helpMainMenu";
             this.helpMainMenu.Size = new System.Drawing.Size(44, 20);
             this.helpMainMenu.Text = "Help";
+            this.helpMainMenu.Click += new System.EventHandler(this.helpMainMenu_Click);
             // 
             // imgBox
             // 
@@ -492,6 +493,51 @@
             this.autoTabPage.Text = "Automatic mode";
             this.autoTabPage.UseVisualStyleBackColor = true;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.verticalStepBox);
+            this.groupBox2.Controls.Add(this.horizontalStepBox);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Location = new System.Drawing.Point(153, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(177, 77);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Automatic search step size";
+            // 
+            // verticalStepBox
+            // 
+            this.verticalStepBox.Location = new System.Drawing.Point(81, 48);
+            this.verticalStepBox.Name = "verticalStepBox";
+            this.verticalStepBox.Size = new System.Drawing.Size(86, 20);
+            this.verticalStepBox.TabIndex = 3;
+            // 
+            // horizontalStepBox
+            // 
+            this.horizontalStepBox.Location = new System.Drawing.Point(81, 20);
+            this.horizontalStepBox.Name = "horizontalStepBox";
+            this.horizontalStepBox.Size = new System.Drawing.Size(86, 20);
+            this.horizontalStepBox.TabIndex = 2;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(11, 51);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Vertical:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(57, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Horizontal:";
+            // 
             // groupBox13
             // 
             this.groupBox13.Controls.Add(this.curvesColorCmbBox);
@@ -593,51 +639,6 @@
             this.getPointsBtn.UseVisualStyleBackColor = true;
             this.getPointsBtn.Click += new System.EventHandler(this.getPointsBtn_Click);
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.verticalStepBox);
-            this.groupBox2.Controls.Add(this.horizontalStepBox);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(153, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(177, 77);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Automatic search step size";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(57, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Horizontal:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 51);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Vertical:";
-            // 
-            // horizontalStepBox
-            // 
-            this.horizontalStepBox.Location = new System.Drawing.Point(81, 20);
-            this.horizontalStepBox.Name = "horizontalStepBox";
-            this.horizontalStepBox.Size = new System.Drawing.Size(86, 20);
-            this.horizontalStepBox.TabIndex = 2;
-            // 
-            // verticalStepBox
-            // 
-            this.verticalStepBox.Location = new System.Drawing.Point(81, 48);
-            this.verticalStepBox.Name = "verticalStepBox";
-            this.verticalStepBox.Size = new System.Drawing.Size(86, 20);
-            this.verticalStepBox.TabIndex = 3;
-            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -675,14 +676,14 @@
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.autoTabPage.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.selectPenColorBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawModePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.penSizeTrackBar)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

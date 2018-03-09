@@ -320,6 +320,11 @@ namespace PandaDigital
             drawModePictureBox.Invalidate(true);
             drawModePictureBox.Update();
         }
+
+        private void helpMainMenu_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("See https://github.com/HugoRodI/PandaDigital/ for more info.");
+        }
         /* End of events */
 
         /* Drawing */
@@ -559,7 +564,9 @@ namespace PandaDigital
         {
             userPoints.FindNearestPoint(selectedPoints, point);
         }
-        
+
+
+
         /* End of methods for events related with image */
     }
 }
